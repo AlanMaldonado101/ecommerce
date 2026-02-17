@@ -1,0 +1,108 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons+Outlined');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	--primary-100: #424874;
+	--primary-200: #A6B1E1;
+	--primary-300: #fdf6fd;
+	--accent-100: #D9ACF5;
+	--accent-200: #FFCEFE;
+	--text-100: #292524;
+	--text-200: #64748b;
+	--bg-100: #F4EEFF;
+	--bg-200: #DCD6F7;
+	--bg-300: #bbb9e9;
+}
+
+body {
+	font-family: 'Plus Jakarta Sans', 'Montserrat', system-ui, sans-serif;
+	background-color: var(--bg-100);
+	color: var(--text-100);
+	min-height: 100vh;
+}
+
+.hero-gradient {
+	background: linear-gradient(135deg, var(--primary-100) 0%, var(--accent-100) 100%);
+}
+
+.login-page-bg {
+	background-color: var(--bg-100);
+	background-image: radial-gradient(circle at 20% 20%, rgba(66, 72, 116, 0.15) 0%, transparent 25%),
+		radial-gradient(circle at 80% 80%, rgba(217, 172, 245, 0.15) 0%, transparent 25%),
+		url("data:image/svg+xml,%3Csvg width='52' height='26' viewBox='0 0 52 26' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23424874' fill-opacity='0.08'%3E%3Cpath d='M10 10c0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6h2c0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4 3.314 0 6 2.686 6 6 0 2.21 1.79 4 4 4v2c-3.314 0-6-2.686-6-6 0-2.21-1.79-4-4-4-3.314 0-6-2.686-6-6zm25.464-1.95l2.536 2.536L36.586 12l-2.536-2.536 1.414-1.414zM28.586 20l2.536 2.536-1.414 1.414L27.172 21.414 28.586 20zM21 16h3v3h-3v-3zM9 11h3v3H9v-3z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* CONTROLES Y BOTONES BASE */
+.btn-paginated {
+	@apply rounded-full font-semibold text-xs py-1 px-4 transition-all disabled:opacity-50 disabled:cursor-not-allowed;
+	border: 1px solid rgba(41, 37, 36, 0.15);
+	background-color: #ffffff;
+	color: var(--text-100);
+}
+
+.btn-paginated:hover:not(:disabled) {
+	background-color: var(--primary-100);
+	color: #ffffff;
+	border-color: transparent;
+}
+
+.btn-primary {
+	@apply text-sm font-semibold rounded-full px-5 py-2 transition-all;
+	background: linear-gradient(135deg, var(--primary-100), var(--accent-200));
+	color: #ffffff;
+	box-shadow: 0 10px 25px rgba(66, 72, 116, 0.4);
+}
+
+.btn-primary:hover {
+	filter: brightness(1.05);
+	transform: translateY(-1px);
+}
+
+.btn-secondary-outline {
+	@apply text-sm font-medium rounded-full px-4 py-2 transition-all;
+	border: 1px solid rgba(41, 37, 36, 0.18);
+	color: var(--text-200);
+	background-color: rgba(244, 238, 255, 0.6);
+}
+
+.btn-secondary-outline:hover {
+	background-color: #ffffff;
+}
+
+/* Para Chrome, Safari, Edge y Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Para firefox */
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+/* Tarjetas tipo "glass" usadas en catálogo y checkout */
+.glass-card {
+	background-color: rgba(244, 238, 255, 0.92);
+	border-radius: 1.5rem;
+	box-shadow:
+		0 18px 45px rgba(41, 37, 36, 0.08),
+		0 3px 10px rgba(41, 37, 36, 0.04);
+	border: 1px solid rgba(66, 72, 116, 0.4);
+	backdrop-filter: blur(12px);
+}
+
+.soft-input {
+	border-radius: 0.9rem;
+	background-color: rgba(253, 246, 253, 0.9);
+	border: 1px solid rgba(66, 72, 116, 0.4);
+}
+
+.soft-input input {
+	background: transparent;
+}
+
