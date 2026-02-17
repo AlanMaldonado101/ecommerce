@@ -10,14 +10,14 @@ const slideLeft = {
 	initial: { x: '100%' },
 	animate: { x: 0 },
 	exit: { x: '-100%' },
-	transition: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
+	transition: { duration: 0.4, ease: [0.32, 0.72, 0, 1] as [number, number, number, number] },
 };
 
 const slideRight = {
 	initial: { x: '-100%' },
 	animate: { x: 0 },
 	exit: { x: '100%' },
-	transition: { duration: 0.4, ease: [0.32, 0.72, 0, 1] },
+	transition: { duration: 0.4, ease: [0.32, 0.72, 0, 1] as [number, number, number, number] },
 };
 
 export const AuthPage = () => {
@@ -83,7 +83,7 @@ export const AuthPage = () => {
 											¡Únete a la <span className="text-primary">fiesta!</span>
 										</>
 									}
-								subtitle="Crea tu cuenta y accede a ofertas exclusivas y la mejor colección de artículos de fiesta."
+									subtitle="Crea tu cuenta y accede a ofertas exclusivas y la mejor colección de artículos de fiesta."
 									avatarLabel="¡Ya nos acompañan!"
 								/>
 							</motion.div>

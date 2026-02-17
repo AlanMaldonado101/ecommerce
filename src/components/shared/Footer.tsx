@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { Logo } from './Logo';
 import { socialLinks } from '../../constants/links';
 
 export const Footer = () => {

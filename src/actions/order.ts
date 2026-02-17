@@ -247,7 +247,7 @@ export const getAllOrders = async () => {
 	const { data, error } = await supabase
 		.from('orders')
 		.select(
-			'id, total_amount, status, created_at, customers(full_name, email)'
+			'id, total_amount, status, created_at, customers_id'
 		)
 		.order('created_at', { ascending: false });
 
@@ -256,7 +256,24 @@ export const getAllOrders = async () => {
 		throw new Error(error.message);
 	}
 
-	return data;
+	// Fetch customer details for each order
+	const customerIds = [...new Set(data.map(o => o.customers_id))];
+	const { data: customers } = await supabase
+		.from('customers')
+		.select('id, full_name, email')
+		.in('id', customerIds);
+
+	const customerMap = new Map(
+		(customers ?? []).map(c => [c.id, { full_name: c.full_name, email: c.email }])
+	);
+
+	return data.map(order => ({
+		id: order.id,
+		total_amount: order.total_amount,
+		status: order.status,
+		created_at: order.created_at,
+		customers: customerMap.get(order.customers_id) ?? null,
+	}));
 };
 
 export const updateOrderStatus = async ({
@@ -291,15 +308,18 @@ export const getOrderByIdAdmin = async (id: number) => {
 		throw new Error(error.message);
 	}
 
-	const addr = order?.andresses;
+	// Cast to any because Supabase generated types are missing Relationships for orders.
+	// Fix properly by running: npx supabase gen types typescript --project-id <id> > src/supabase/supabase.ts
+	const o = order as any;
+	const addr = o?.andresses;
 	return {
 		customer: {
-			email: order?.customers?.email,
-			full_name: order.customers?.full_name,
+			email: o?.customers?.email,
+			full_name: o?.customers?.full_name,
 		},
-		totalAmount: order.total_amount,
-		status: order.status,
-		created_at: order.created_at,
+		totalAmount: o.total_amount,
+		status: o.status,
+		created_at: o.created_at,
 		address: {
 			addressLine1: addr?.adress_line1 ?? null,
 			addressLine2: addr?.adress_line2 ?? null,
@@ -308,7 +328,7 @@ export const getOrderByIdAdmin = async (id: number) => {
 			postalCode: addr?.posta_code ?? null,
 			country: addr?.country ?? null,
 		},
-		orderItems: order.order_items.map(item => ({
+		orderItems: (o.order_items ?? []).map((item: any) => ({
 			quantity: item.quantity,
 			price: item.price,
 			color_name: item.variants?.color_name,

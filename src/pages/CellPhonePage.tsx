@@ -188,7 +188,7 @@ export const CellPhonePage = () => {
 
 					{/* Características */}
 					<ul className='space-y-2 ml-7 my-10'>
-						{product.features.map(feature => (
+						{Array.isArray(product.features) && (product.features as string[]).map((feature) => (
 							<li
 								key={feature}
 								className='text-sm flex items-center gap-2 tracking-tight font-medium'
@@ -207,11 +207,10 @@ export const CellPhonePage = () => {
 							{availableColors.map(color => (
 								<button
 									key={color}
-									className={`w-8 h-8 rounded-full flex justify-center items-center ${
-										selectedColor === color
-											? 'border border-slate-800'
-											: ''
-									}`}
+									className={`w-8 h-8 rounded-full flex justify-center items-center ${selectedColor === color
+										? 'border border-slate-800'
+										: ''
+										}`}
 									onClick={() => setSelectedColor(color)}
 								>
 									<span
