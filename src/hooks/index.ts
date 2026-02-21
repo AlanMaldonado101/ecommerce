@@ -33,3 +33,9 @@ export * from './orders/useOrders';
 export * from './orders/useAllOrders';
 export * from './orders/useChangeStatusOrder';
 export * from './orders/useOrderAdmin';
+
+/* ********************************** */
+/*              PAYMENTS              */
+/* ********************************** */
+export * from './payments/useCreatePreference';
+export * from './payments/useProcessPayment';

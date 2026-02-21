@@ -169,7 +169,15 @@ export const getOrdersByCustomerId = async () => {
 	return orders;
 };
 
-export const getOrderById = async (orderId: number) => {
+export const getOrderById = async (orderId: string | number) => {
+	// Check if it's a UUID (Mercado Pago order) or number (old order)
+	if (typeof orderId === 'string' && orderId.includes('-')) {
+		return getMercadoPagoOrderById(orderId);
+	}
+
+	// Old order logic for backward compatibility
+	const orderIdNum = typeof orderId === 'string' ? Number(orderId) : orderId;
+
 	const { data, error: errorUser } = await supabase.auth.getUser();
 
 	if (errorUser) {
@@ -335,6 +343,84 @@ export const getOrderByIdAdmin = async (id: number) => {
 			storage: item.variants?.storage,
 			productName: item.variants?.products?.name,
 			productImage: item.variants?.products?.images[0],
+		})),
+	};
+};
+
+
+/* ********************************** */
+/*        MERCADO PAGO ORDERS         */
+/* ********************************** */
+export const getMercadoPagoOrderById = async (orderId: string) => {
+	const { data: userData, error: errorUser } = await supabase.auth.getUser();
+
+	if (errorUser) {
+		console.log(errorUser);
+		throw new Error(errorUser.message);
+	}
+
+	const { data: order, error } = await supabase
+		.from('orders')
+		.select('*')
+		.eq('id', orderId)
+		.eq('buyer_id', userData.user.id)
+		.single();
+
+	if (error) {
+		console.log(error);
+		throw new Error(error.message);
+	}
+
+	// Parse items from JSONB
+	const items = order.items as Array<{
+		variant_id: string;
+		quantity: number;
+		unit_price: number;
+		name: string;
+		image: string;
+	}>;
+
+	// Parse buyer data from JSONB
+	const buyerData = order.buyer_data as {
+		name: string;
+		email: string;
+		phone: string;
+		address: {
+			street: string;
+			number: string;
+			zipCode: string;
+			city: string;
+			state: string;
+		};
+	};
+
+	return {
+		id: order.id,
+		orderNumber: order.order_number,
+		customer: {
+			email: buyerData.email,
+			full_name: buyerData.name,
+		},
+		totalAmount: order.total_amount,
+		status: order.status,
+		payment_method: order.payment_method,
+		created_at: order.created_at,
+		paid_at: order.paid_at,
+		address: {
+			addressLine1: buyerData.address.street,
+			addressLine2: buyerData.address.number,
+			city: buyerData.address.city,
+			state: buyerData.address.state,
+			postalCode: buyerData.address.zipCode,
+			country: 'Chile',
+		},
+		orderItems: items.map(item => ({
+			quantity: item.quantity,
+			price: item.unit_price,
+			productName: item.name,
+			productImage: item.image,
+			color_name: '',
+			storage: '',
 		})),
 	};
 };

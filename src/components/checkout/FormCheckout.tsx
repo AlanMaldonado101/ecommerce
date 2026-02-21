@@ -6,54 +6,27 @@ import {
 } from '../../lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ItemsCheckout } from './ItemsCheckout';
-import { useCreateOrder } from '../../hooks';
 import { useCartStore } from '../../store/cart.store';
-import { ImSpinner2 } from 'react-icons/im';
+import { useUser } from '../../hooks/auth/useUser';
+import { MercadoPagoCheckout } from './MercadoPagoCheckout';
+import { useState } from 'react';
 
 export const FormCheckout = () => {
 	const {
 		register,
 		formState: { errors },
 		handleSubmit,
+		watch,
 	} = useForm<AddressFormValues>({
 		resolver: zodResolver(addressSchema),
 	});
 
-	const { mutate: createOrder, isPending } = useCreateOrder();
-
-	const cleanCart = useCartStore(state => state.cleanCart);
-	const cartItems = useCartStore(state => state.items);
-	const totalAmount = useCartStore(state => state.totalAmount);
+	const [addressData, setAddressData] = useState<AddressFormValues | null>(null);
+	const { session } = useUser();
 
 	const onSubmit = handleSubmit(data => {
-		const orderInput = {
-			address: data,
-			cartItems: cartItems.map(item => ({
-				variantId: item.variantId,
-				quantity: item.quantity,
-				price: item.price,
-			})),
-			totalAmount,
-		};
-
-		createOrder(orderInput, {
-			onSuccess: () => {
-				cleanCart();
-			},
-		});
+		setAddressData(data);
 	});
-
-	if (isPending) {
-		return (
-			<div className='flex h-screen flex-col items-center justify-center gap-3'>
-				<ImSpinner2 className='h-10 w-10 animate-spin text-[#424874]' />
-
-				<p className='text-sm font-medium text-[#64748b]'>
-					Estamos procesando tu pedido
-				</p>
-			</div>
-		);
-	}
 
 	return (
 		<div className='glass-card p-6 md:p-8'>
@@ -135,22 +108,31 @@ export const FormCheckout = () => {
 				</div>
 
 				<div className='flex flex-col gap-3 rounded-2xl bg-white/90 p-5 text-[13px] text-[#64748b]'>
-					<p className='text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748b]'>
-						3. Método de pago
-					</p>
-					<p className='text-sm font-semibold text-[#292524]'>
-						Depósito Bancario
-					</p>
-					<p>Compra a través de transferencia bancaria:</p>
-					<p>BANCO PICHINCHA</p>
-					<p>Razón Social: Tiendita Jireh</p>
-					<p>RUC: 123456789000</p>
-					<p>Tipo de cuenta: Corriente</p>
-					<p>Número de cuenta: 1234567890</p>
-					<p className='text-[11px]'>
-						La información será compartida nuevamente una vez que se haya
-						finalizado la compra.
-					</p>
+					{!addressData ? (
+						<>
+							<p className='text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748b]'>
+								3. Método de pago
+							</p>
+							<p className='text-sm text-[#292524]'>
+								Completa la información de envío para continuar con el pago
+							</p>
+						</>
+					) : (
+						<MercadoPagoCheckout
+							buyerData={{
+								name: session?.user?.user_metadata?.full_name || '',
+								email: session?.user?.email || '',
+								phone: session?.user?.user_metadata?.phone || '',
+								address: {
+									street: addressData.addressLine1,
+									number: addressData.addressLine2 || '',
+									zipCode: addressData.postalCode || '',
+									city: addressData.city,
+									state: addressData.state,
+								},
+							}}
+						/>
+					)}
 				</div>
 
 				<div className='flex flex-col gap-6'>
@@ -164,8 +146,9 @@ export const FormCheckout = () => {
 				<button
 					type='submit'
 					className='btn-primary mt-2 w-full justify-center text-center'
+					disabled={!!addressData}
 				>
-					Finalizar Pedido
+					{addressData ? 'Información de envío completada' : 'Continuar al pago'}
 				</button>
 			</form>
 		</div>
