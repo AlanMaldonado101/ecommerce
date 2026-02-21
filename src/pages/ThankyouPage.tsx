@@ -39,7 +39,7 @@ export const ThankyouPage = () => {
 								celebration
 							</span>
 						</span>
-						<span>Tiendita de Jireh</span>
+						<span>Tiendita Jireh</span>
 					</Link>
 
 					<span className='text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500'>
@@ -125,7 +125,7 @@ export const ThankyouPage = () => {
 								<p className='font-semibold'>
 									BANCO PICHINCHA
 								</p>
-								<p>Razón Social: Tiendita de Jireh</p>
+								<p>Razón Social: Tiendita Jireh</p>
 								<p>RUC: 123456789000</p>
 								<p>Tipo de cuenta: Corriente</p>
 								<p>Número de cuenta: 1234567890</p>

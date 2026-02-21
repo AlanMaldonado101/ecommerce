@@ -14,7 +14,7 @@ export const Footer = () => {
 								</span>
 							</div>
 							<span className="text-xl font-extrabold text-white">
-								Tiendita de Jireh
+								Tiendita Jireh
 							</span>
 						</div>
 						<p className="text-sm leading-relaxed">
@@ -110,7 +110,7 @@ export const Footer = () => {
 					</div>
 				</div>
 				<div className="flex flex-col items-center gap-4 border-t border-slate-800 pt-8 text-xs md:flex-row md:justify-between">
-					<p>© 2024 Tiendita de Jireh. Todos los derechos reservados.</p>
+					<p>© 2024 Tiendita Jireh. Todos los derechos reservados.</p>
 					<div className="flex gap-6">
 						<Link
 							to="#"

@@ -44,7 +44,7 @@ export const RegisterFormContent = () => {
 						<span className="material-icons-outlined">celebration</span>
 					</div>
 					<span className="text-2xl font-extrabold tracking-tighter">
-						Tiendita de Jireh<span className="text-primary">.</span>
+						Tiendita Jireh<span className="text-primary">.</span>
 					</span>
 				</Link>
 			</div>
@@ -63,7 +63,7 @@ export const RegisterFormContent = () => {
 				<div>
 					<h1 className="mb-2 text-3xl font-bold">Crear cuenta</h1>
 					<p className="text-sm opacity-60">
-						Completa los datos para unirte a Tiendita de Jireh.
+						Completa los datos para unirte a Tiendita Jireh.
 					</p>
 				</div>
 				{isPending ? (

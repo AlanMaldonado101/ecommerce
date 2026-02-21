@@ -1,8 +1,8 @@
 <div align="center">
 
-  <img src="public/logo-jireh.png" alt="Tiendita de Jireh" width="120" />
+  <img src="public/logo-jireh.png" alt="Tiendita Jireh" width="120" />
 
-  <h1>🛍️ Tiendita de Jireh</h1>
+  <h1>🛍️ Tiendita Jireh</h1>
 
   <p><strong>E-commerce moderno construido con React, TypeScript y Supabase</strong></p>
 

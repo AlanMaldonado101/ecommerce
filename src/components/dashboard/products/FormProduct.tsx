@@ -338,7 +338,7 @@ export const FormProduct = ({ titleForm }: Props) => {
 							</label>
 							<div className='flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-500'>
 								<span className='whitespace-nowrap'>
-									tienditadejireh.com/p/
+									tienditajireh.com/p/
 								</span>
 								<span className='truncate font-semibold text-slate-800'>
 									{watch('slug')}
@@ -351,7 +351,7 @@ export const FormProduct = ({ titleForm }: Props) => {
 							</label>
 							<input
 								type='text'
-								placeholder='Ej: Pack Globos Pastel x50 — Tiendita de Jireh'
+								placeholder='Ej: Pack Globos Pastel x50 — Tiendita Jireh'
 								value={metaTitle}
 								onChange={e => setMetaTitle(e.target.value)}
 								className='w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium tracking-tight text-slate-700 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20'

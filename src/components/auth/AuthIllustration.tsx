@@ -15,7 +15,7 @@ export const AuthIllustration = ({ title, subtitle, avatarLabel }: Props) => (
 			<div className="-rotate-3 mb-12 inline-flex transform items-center justify-center rounded-2xl bg-white p-5 shadow-lg transition-transform duration-300 hover:rotate-0">
 				<img
 					src={ILLUSTRATION_URL}
-					alt="Tiendita de Jireh"
+					alt="Tiendita Jireh"
 					className="h-72 w-72 rounded-lg object-cover"
 				/>
 			</div>

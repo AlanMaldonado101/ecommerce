@@ -108,7 +108,7 @@ export const FormCheckout = () => {
 							className='soft-input w-full px-3 py-2 text-sm text-[#292524] focus:outline-none'
 							{...register('country')}
 						>
-							<option value='Ecuador'>Ecuador</option>
+							<option value='Chile'>Chile</option>
 						</select>
 						<div className='flex items-center justify-end text-[11px] text-[#64748b]'>
 							<span>Solo envíos nacionales por ahora</span>
@@ -143,7 +143,7 @@ export const FormCheckout = () => {
 					</p>
 					<p>Compra a través de transferencia bancaria:</p>
 					<p>BANCO PICHINCHA</p>
-					<p>Razón Social: Tiendita de Jireh</p>
+					<p>Razón Social: Tiendita Jireh</p>
 					<p>RUC: 123456789000</p>
 					<p>Tipo de cuenta: Corriente</p>
 					<p>Número de cuenta: 1234567890</p>

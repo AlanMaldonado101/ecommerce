@@ -36,7 +36,7 @@ export const RootLayout = () => {
 				</div>
 				<footer className="pointer-events-none fixed bottom-4 left-0 w-full text-center">
 					<p className="text-xs font-medium uppercase tracking-widest text-[#292524]/40">
-						© 2024 Tiendita de Jireh • Hecho para celebrar
+						© 2024 Tiendita Jireh • Hecho para celebrar
 					</p>
 				</footer>
 				{isSheetOpen && <Sheet />}

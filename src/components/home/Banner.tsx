@@ -49,7 +49,7 @@ export const Banner = () => {
 						<div className="relative h-72 w-72 sm:h-80 sm:w-80 rounded-full bg-white/70 shadow-xl shadow-primary/20 flex items-center justify-center overflow-hidden">
 							<img
 								src="/logo-jireh.png"
-								alt="Logo Tiendita de Jireh"
+								alt="Logo Tiendita Jireh"
 								className="h-56 w-56 object-contain"
 							/>
 						</div>

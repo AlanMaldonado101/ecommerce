@@ -13,15 +13,15 @@ export const AboutPage = () => {
 
 			<div className='flex flex-col gap-4 tracking-tighter leading-7 text-sm font-medium text-slate-800'>
 				<p>
-					Tiendita de Jireh es una tienda en línea dedicada a la venta de artículos para fiestas, fundada en 2021. Nuestro objetivo es ofrecer la mejor calidad y precio en globos, decoración y todo lo que necesitas para celebrar. Contamos con un equipo que selecciona los mejores productos para tu fiesta.
+					Tiendita Jireh es una tienda en línea dedicada a la venta de artículos para fiestas, fundada en 2021. Nuestro objetivo es ofrecer la mejor calidad y precio en globos, decoración y todo lo que necesitas para celebrar. Contamos con un equipo que selecciona los mejores productos para tu fiesta.
 				</p>
 
 				<p>
-					En Tiendita de Jireh encontrarás una amplia variedad de productos para cumpleaños, eventos y celebraciones. Además, promociones y descuentos exclusivos para que armes tu fiesta al mejor precio.
+					En Tiendita Jireh encontrarás una amplia variedad de productos para cumpleaños, eventos y celebraciones. Además, promociones y descuentos exclusivos para que armes tu fiesta al mejor precio.
 				</p>
 
 				<h2 className='text-3xl font-semibold tracking-tight mt-8 mb-4'>
-					¡No esperes más y compra en Tiendita de Jireh!
+					¡No esperes más y compra en Tiendita Jireh!
 				</h2>
 
 				<p>

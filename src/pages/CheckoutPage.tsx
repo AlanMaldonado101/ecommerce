@@ -32,7 +32,7 @@ export const CheckoutPage = () => {
 					className='self-center text-3xl font-extrabold tracking-tight text-[#292524] transition-all md:self-start md:text-4xl'
 				>
 					<p>
-						<span className='text-[#424874]'>Tiendita de Jireh</span>
+						<span className='text-[#424874]'>Tiendita Jireh</span>
 					</p>
 				</Link>
 			</header>

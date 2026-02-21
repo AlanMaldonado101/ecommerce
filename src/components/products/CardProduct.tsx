@@ -63,11 +63,21 @@ export const CardProduct = ({
 					to={`/productos/${slug}`}
 					className="relative block h-64 overflow-hidden bg-accent-blue/10"
 				>
-					<img
-						src={img}
-						alt={name}
-						className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-					/>
+					{img ? (
+						<img
+							src={img}
+							alt={name}
+							className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+							onError={(e) => {
+								e.currentTarget.src = '/logo-jireh.png';
+								e.currentTarget.className = "h-full w-full object-contain p-8 opacity-20 transition-transform duration-500 group-hover:scale-110";
+							}}
+						/>
+					) : (
+						<div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-400 transition-transform duration-500 group-hover:scale-110">
+							<span className="material-icons-outlined text-5xl opacity-50">image_not_supported</span>
+						</div>
+					)}
 					<div className="absolute right-3 top-3">
 						<button
 							type="button"
@@ -121,11 +131,21 @@ export const CardProduct = ({
 				to={`/productos/${slug}`}
 				className="relative block aspect-square overflow-hidden bg-slate-100"
 			>
-				<img
-					src={img}
-					alt={name}
-					className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-				/>
+				{img ? (
+					<img
+						src={img}
+						alt={name}
+						className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+						onError={(e) => {
+							e.currentTarget.src = '/logo-jireh.png';
+							e.currentTarget.className = "h-full w-full object-contain p-8 opacity-20 transition-transform duration-500 group-hover:scale-110";
+						}}
+					/>
+				) : (
+					<div className="flex h-full w-full items-center justify-center bg-slate-200 text-slate-400 transition-transform duration-500 group-hover:scale-110">
+						<span className="material-icons-outlined text-5xl opacity-50">image_not_supported</span>
+					</div>
+				)}
 				{stock === 0 && (
 					<div className="absolute left-4 top-4">
 						<Tag contentTag="agotado" />
@@ -177,11 +197,10 @@ export const CardProduct = ({
 						key={color.color}
 						type="button"
 						onClick={() => setActiveColor(color)}
-						className={`grid h-6 w-6 place-items-center rounded-full border ${
-							activeColor.color === color.color
-								? 'border-slate-800'
-								: 'border-transparent'
-						}`}
+						className={`grid h-6 w-6 place-items-center rounded-full border ${activeColor.color === color.color
+							? 'border-slate-800'
+							: 'border-transparent'
+							}`}
 					>
 						<span
 							className="h-3.5 w-3.5 rounded-full"

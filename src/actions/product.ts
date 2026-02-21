@@ -157,14 +157,15 @@ export const createProduct = async (productInput: ProductInput) => {
 			productInput.images.map(async image => {
 				const { data, error } = await supabase.storage
 					.from('product-images')
-					.upload(`${folderName}/${product.id}-${image.name}`, image);
+					.upload(`${folderName}/${product.id}-${image.name}`, image, {
+						upsert: true
+					});
 
 				if (error) throw new Error(error.message);
 
-				const imageUrl = `${supabase.storage
+				const imageUrl = supabase.storage
 					.from('product-images')
-					.getPublicUrl(data.path).data.publicUrl
-					}`;
+					.getPublicUrl(data.path).data.publicUrl;
 
 				return imageUrl;
 			})
@@ -367,7 +368,9 @@ export const updateProduct = async (
 				// Si la imagen no es una URL (es un archivo), entonces subela al bucket
 				const { data, error } = await supabase.storage
 					.from('product-images')
-					.upload(`${folderName}/${productId}-${image.name}`, image);
+					.upload(`${folderName}/${productId}-${image.name}`, image, {
+						upsert: true
+					});
 
 				if (error) throw new Error(error.message);
 
@@ -452,18 +455,30 @@ export const updateProduct = async (
 	];
 
 	// 5.4 Eliminar las variantes que no están en la lista de IDs
-	const { error: deleteVariantsError } = await supabase
-		.from('variants')
-		.delete()
-		.eq('product_id', productId)
-		.not(
-			'id',
-			'in',
-			`(${currentVariantIds ? currentVariantIds.join(',') : 0})` // (UIWE2030230-2230000, UIWE2030230-2230001, ...)
-		);
+	// NOTA: Cuando currentVariantIds está vacío, necesitamos eliminar TODAS las variantes
+	// sin usar la cláusula .not(), ya que .not('id', 'in', '()') genera un error de sintaxis SQL
+	// "invalid input syntax for type uuid: ''". En su lugar, usamos solo .eq('product_id', productId)
+	// para eliminar todas las variantes del producto.
+	if (currentVariantIds.length > 0) {
+		// Caso normal: eliminar variantes que NO están en la lista de IDs actuales
+		const { error: deleteVariantsError } = await supabase
+			.from('variants')
+			.delete()
+			.eq('product_id', productId)
+			.not('id', 'in', `(${currentVariantIds.join(',')})`);
 
-	if (deleteVariantsError)
-		throw new Error(deleteVariantsError.message);
+		if (deleteVariantsError)
+			throw new Error(deleteVariantsError.message);
+	} else {
+		// Caso especial: no hay variantes que preservar, eliminar todas las variantes del producto
+		const { error: deleteVariantsError } = await supabase
+			.from('variants')
+			.delete()
+			.eq('product_id', productId);
+
+		if (deleteVariantsError)
+			throw new Error(deleteVariantsError.message);
+	}
 
 	return updatedProduct;
 };

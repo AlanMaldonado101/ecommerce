@@ -28,7 +28,7 @@ export const LoginFormContent = () => {
 						<span className="material-icons-outlined">celebration</span>
 					</div>
 					<span className="text-2xl font-extrabold tracking-tighter">
-						Tiendita de Jireh<span className="text-primary">.</span>
+						Tiendita Jireh<span className="text-primary">.</span>
 					</span>
 				</Link>
 			</div>

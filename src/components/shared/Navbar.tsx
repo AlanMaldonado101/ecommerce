@@ -57,7 +57,7 @@ export const Navbar = () => {
 						<div className="relative w-full">
 							<input
 								type="text"
-								placeholder="Buscar globos, decoración, Tiendita de Jireh..."
+								placeholder="Buscar globos, decoración, Tiendita Jireh..."
 								className="w-full rounded-full border-none bg-primary/5 py-3 pl-12 pr-6 text-sm transition-all focus:ring-2 focus:ring-primary"
 								onFocus={() => openSheet('search')}
 								readOnly
