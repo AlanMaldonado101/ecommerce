@@ -52,121 +52,104 @@ export const Navbar = () => {
 				<div className="flex h-20 items-center justify-between">
 					<Logo />
 
-					{/* Search bar - desktop */}
-					<div className="hidden flex-1 max-w-md mx-8 md:flex">
-						<div className="relative w-full">
-							<input
-								type="text"
-								placeholder="Buscar globos, decoración, Tiendita Jireh..."
-								className="w-full rounded-full border-none bg-primary/5 py-3 pl-12 pr-6 text-sm transition-all focus:ring-2 focus:ring-primary"
-								onFocus={() => openSheet('search')}
-								readOnly
-							/>
-							<span
-								className="material-icons-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary/60 cursor-pointer"
-								onClick={() => openSheet('search')}
-							>
-								search
-							</span>
-						</div>
-					</div>
-
-					{/* Nav links + utilities */}
-					<div className="flex items-center gap-6">
-						<nav
-							ref={navRef}
-							className="hidden md:flex items-center gap-1"
-						>
-							{navbarLinks.map(link => {
-								if (isDropdownLink(link)) {
-									const isOpen = openDropdownId === link.id;
-									return (
-										<div
-											key={link.id}
-											className="relative"
-										>
-											<button
-												type="button"
-												onClick={() =>
-													setOpenDropdownId(prev =>
-														prev === link.id
-															? null
-															: link.id
-													)
-												}
-												className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-primary/10 hover:text-primary transition-colors"
-											>
-												{link.title}
-												<MdOutlineExpandMore
-													className={`h-4 w-4 transition-transform ${
-														isOpen
-															? 'rotate-180'
-															: ''
-													}`}
-												/>
-											</button>
-											{isOpen && (
-												<div className="absolute left-0 top-full mt-1 min-w-[180px] rounded-xl border border-primary/10 bg-background-light py-2 shadow-lg">
-													{link.children.map(
-														(child) => (
-															<Link
-																key={
-																	child.href
-																}
-																to={
-																	child.href
-																}
-																className="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-primary/10 hover:text-primary transition-colors"
-																onClick={() =>
-																	setOpenDropdownId(
-																		null
-																	)
-																}
-															>
-																{
-																	child.title
-																}
-															</Link>
-														)
-													)}
-												</div>
-											)}
-										</div>
-									);
-								}
-								const isHashLink = link.href.includes('#');
-								if (isHashLink) {
-									return (
-										<Link
-											key={link.id}
-											to={link.href}
-											className="rounded-lg px-3 py-2 text-sm font-medium transition-colors text-slate-700 hover:bg-primary/10 hover:text-primary"
+					{/* Nav links */}
+					<nav
+						ref={navRef}
+						className="hidden md:flex items-center gap-1 flex-1 justify-center"
+					>
+						{navbarLinks.map(link => {
+							if (isDropdownLink(link)) {
+								const isOpen = openDropdownId === link.id;
+								return (
+									<div
+										key={link.id}
+										className="relative"
+									>
+										<button
+											type="button"
+											onClick={() =>
+												setOpenDropdownId(prev =>
+													prev === link.id
+														? null
+														: link.id
+												)
+											}
+											className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-primary/10 hover:text-primary transition-colors"
 										>
 											{link.title}
-										</Link>
-									);
-								}
+											<MdOutlineExpandMore
+												className={`h-4 w-4 transition-transform ${
+													isOpen
+														? 'rotate-180'
+														: ''
+												}`}
+											/>
+										</button>
+										{isOpen && (
+											<div className="absolute left-0 top-full mt-1 min-w-[180px] rounded-xl border border-primary/10 bg-background-light py-2 shadow-lg">
+												{link.children.map(
+													(child) => (
+														<Link
+															key={
+																child.href
+															}
+															to={
+																child.href
+															}
+															className="block px-4 py-2 text-sm font-medium text-slate-700 hover:bg-primary/10 hover:text-primary transition-colors"
+															onClick={() =>
+																setOpenDropdownId(
+																	null
+																)
+															}
+														>
+															{
+																child.title
+															}
+														</Link>
+													)
+												)}
+											</div>
+										)}
+									</div>
+								);
+							}
+							const isHashLink = link.href.includes('#');
+							if (isHashLink) {
 								return (
-									<NavLink
+									<Link
 										key={link.id}
 										to={link.href}
-										className={({ isActive }) =>
-											`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-												isActive
-													? 'text-primary bg-primary/10'
-													: 'text-slate-700 hover:bg-primary/10 hover:text-primary'
-											}`
-										}
+										className="rounded-lg px-3 py-2 text-sm font-medium transition-colors text-slate-700 hover:bg-primary/10 hover:text-primary"
 									>
 										{link.title}
-									</NavLink>
+									</Link>
 								);
-							})}
-						</nav>
+							}
+							return (
+								<NavLink
+									key={link.id}
+									to={link.href}
+									className={({ isActive }) =>
+										`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+											isActive
+												? 'text-primary bg-primary/10'
+												: 'text-slate-700 hover:bg-primary/10 hover:text-primary'
+										}`
+									}
+								>
+									{link.title}
+								</NavLink>
+							);
+						})}
+					</nav>
 
+					{/* Action Icons Group */}
+					<div className="flex items-center gap-2 md:gap-4">
 						<button
 							onClick={() => openSheet('search')}
-							className="flex items-center gap-1 text-slate-700 hover:text-primary transition-colors md:hidden"
+							className="flex items-center justify-center w-10 h-10 rounded-full text-slate-700 hover:text-primary hover:bg-primary/10 transition-colors"
+							title="Buscar"
 						>
 							<HiOutlineSearch size={22} />
 						</button>
@@ -179,7 +162,7 @@ export const Navbar = () => {
 						) : session ? (
 							<Link
 								to="/account"
-								className="flex items-center gap-1 text-slate-700 hover:text-primary transition-colors"
+								className="flex items-center justify-center w-10 h-10 rounded-full text-slate-700 hover:text-primary hover:bg-primary/10 transition-colors"
 								title="Cuenta"
 							>
 								{customer?.full_name ? (
@@ -189,30 +172,28 @@ export const Navbar = () => {
 								) : (
 									<HiOutlineUser size={22} />
 								)}
-								<span className="hidden text-sm font-medium lg:block">
-									Cuenta
-								</span>
 							</Link>
 						) : (
 							<Link
 								to="/login"
-								className="flex items-center gap-1 text-slate-700 hover:text-primary transition-colors"
+								className="flex items-center justify-center w-10 h-10 rounded-full text-slate-700 hover:text-primary hover:bg-primary/10 transition-colors"
+								title="Cuenta"
 							>
 								<HiOutlineUser size={22} />
-								<span className="hidden text-sm font-medium lg:block">
-									Cuenta
-								</span>
 							</Link>
 						)}
 
 						<button
-							className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-white shadow-lg shadow-primary/30 transition-all hover:shadow-primary/40"
+							className="relative flex items-center justify-center w-10 h-10 rounded-full text-slate-700 hover:text-primary hover:bg-primary/10 transition-colors"
 							onClick={() => openSheet('cart')}
+							title="Carrito"
 						>
-							<HiOutlineShoppingBag size={20} />
-							<span className="text-sm font-bold">
-								Carrito ({totalItemsInCart})
-							</span>
+							<HiOutlineShoppingBag size={22} />
+							{totalItemsInCart > 0 && (
+								<span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
+									{totalItemsInCart}
+								</span>
+							)}
 						</button>
 
 						<button
