@@ -22,6 +22,9 @@ import {
 	DashboardOrdersPage,
 	DashboardOrderPage,
 	ArrangementBuilder,
+	PaymentResultPage,
+	OrderDetailPage,
+	OrdersListPage,
 } from '../pages';
 import { ClientLayout } from '../layouts/ClientLayout';
 import { DashboardLayout } from '../layouts/DashboardLayout';
@@ -77,11 +80,11 @@ export const router = createBrowserRouter([
 					},
 					{
 						path: 'pedidos',
-						element: <OrdersUserPage />,
+						element: <OrdersListPage />,
 					},
 					{
 						path: 'pedidos/:id',
-						element: <OrderUserPage />,
+						element: <OrderDetailPage />,
 					},
 					{
 						path: 'datos',
@@ -106,6 +109,18 @@ export const router = createBrowserRouter([
 	{
 		path: '/checkout/:id/thank-you',
 		element: <ThankyouPage />,
+	},
+	{
+		path: '/checkout/success',
+		element: <PaymentResultPage />,
+	},
+	{
+		path: '/checkout/failure',
+		element: <PaymentResultPage />,
+	},
+	{
+		path: '/checkout/pending',
+		element: <PaymentResultPage />,
 	},
 	{
 		path: '/dashboard',

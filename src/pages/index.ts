@@ -10,6 +10,9 @@ export * from './OrderUserPage';
 export * from './ForgotPasswordPage';
 export * from './ResetPasswordPage';
 export * from './ArrangementBuilder';
+export * from './PaymentResultPage';
+export * from './OrderDetailPage';
+export * from './OrdersListPage';
 
 /* ********************************** */
 /*           ACCOUNT PAGES             */

@@ -4,12 +4,36 @@
 
 /**
  * Generates a unique order number in format ORD-YYYYMMDD-XXXXX
+ * This function should be called via the database function generate_order_number()
+ * to ensure truly sequential numbering.
+ * 
+ * @deprecated Use database function generate_order_number() instead
  */
 export function generateOrderNumber(): string {
   const now = new Date();
   const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
   const randomPart = Math.floor(Math.random() * 99999).toString().padStart(5, '0');
   return `ORD-${datePart}-${randomPart}`;
+}
+
+/**
+ * Generates a unique sequential order number using the database function.
+ * Format: ORD-YYYYMMDD-XXXXX where XXXXX is a sequential 5-digit number.
+ * 
+ * @param supabaseClient - Supabase client instance
+ * @returns Promise with the generated order number
+ */
+export async function generateOrderNumberFromDB(
+  supabaseClient: any
+): Promise<string> {
+  const { data, error } = await supabaseClient.rpc('generate_order_number');
+  
+  if (error) {
+    console.error('Error generating order number:', error);
+    throw new Error('Failed to generate order number');
+  }
+  
+  return data;
 }
 
 /**

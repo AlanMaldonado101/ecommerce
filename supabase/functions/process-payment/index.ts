@@ -1,7 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { MercadoPagoClient } from '../_shared/mercadopago-client.ts';
-import { generateOrderNumber, validateOrderAmount, translateMercadoPagoError } from '../_shared/utils.ts';
+import { generateOrderNumberFromDB, validateOrderAmount, translateMercadoPagoError } from '../_shared/utils.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -76,8 +76,8 @@ serve(async (req) => {
       throw new Error('Invalid order amount');
     }
 
-    // Generate order number
-    const orderNumber = generateOrderNumber();
+    // Generate order number using database function
+    const orderNumber = await generateOrderNumberFromDB(supabaseClient);
 
     // Create order in database
     const { data: order, error: orderError } = await supabaseClient

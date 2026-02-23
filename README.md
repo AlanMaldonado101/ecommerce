@@ -139,6 +139,53 @@ src/
 |----------|-------------|
 | `VITE_PROJECT_URL_SUPABASE` | URL de tu proyecto Supabase |
 | `VITE_SUPABASE_API_KEY` | Clave pública anon de Supabase |
+| `VITE_MERCADOPAGO_PUBLIC_KEY` | Clave pública de Mercado Pago (TEST-* para pruebas) |
+
+### Credenciales de Prueba de Mercado Pago
+
+Para desarrollo y testing, usa las siguientes credenciales:
+
+- **Public Key (Frontend)**: `TEST-18294faa-6945-4f1e-ab29-4647f2c4d5df`
+- **Access Token (Backend/Edge Functions)**: Configurar en Supabase Secrets (ver sección de Supabase Secrets)
+
+#### Tarjetas de Prueba
+
+Mercado Pago proporciona tarjetas de prueba para simular diferentes escenarios:
+
+| Escenario | Tarjeta | CVV | Fecha |
+|-----------|---------|-----|-------|
+| Pago aprobado | 5031 7557 3453 0604 | 123 | 11/25 |
+| Fondos insuficientes | 5031 4332 1540 6351 | 123 | 11/25 |
+| Rechazado por datos inválidos | 5031 4418 2388 6781 | 123 | 11/25 |
+
+> ⚠️ **Importante**: Estas credenciales son solo para pruebas. Para producción, debes obtener tus propias credenciales en [Mercado Pago Developers](https://www.mercadopago.com.ar/developers).
+
+### Configuración de Supabase Secrets
+
+Las Edge Functions requieren secretos configurados en Supabase:
+
+1. Ve a tu proyecto en [Supabase Dashboard](https://supabase.com/dashboard)
+2. Navega a **Edge Functions** → **Secrets**
+3. Agrega los siguientes secretos:
+
+| Secret | Valor | Descripción |
+|--------|-------|-------------|
+| `MERCADOPAGO_ACCESS_TOKEN` | Tu access token de MP | Token privado para API de Mercado Pago |
+| `FRONTEND_URL` | `http://localhost:5173` (dev) o tu URL de producción | URL base para redirecciones de pago |
+
+Para configurar secretos desde CLI:
+
+```bash
+# Instalar Supabase CLI
+npm install -g supabase
+
+# Login
+supabase login
+
+# Configurar secretos
+supabase secrets set MERCADOPAGO_ACCESS_TOKEN=your_access_token
+supabase secrets set FRONTEND_URL=http://localhost:5173
+```
 
 ## 📜 Scripts Disponibles
 

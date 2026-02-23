@@ -4,6 +4,7 @@ import { FormCheckout } from '../components/checkout/FormCheckout';
 import { ItemsCheckout } from '../components/checkout/ItemsCheckout';
 import { useUser } from '../hooks';
 import { Loader } from '../components/shared/Loader';
+import { TestModeIndicator } from '../components/shared/TestModeIndicator';
 import { useEffect } from 'react';
 import { supabase } from '../supabase/client';
 
@@ -26,6 +27,7 @@ export const CheckoutPage = () => {
 
 	return (
 		<div className='min-h-screen bg-gradient-to-b from-[#bbb9e9] via-[#fdf6fd] to-[#F4EEFF]'>
+			<TestModeIndicator />
 			<header className='flex h-[90px] flex-col items-center justify-center border-b border-[#DCD6F7] bg-[rgba(244,238,255,0.95)] px-6'>
 				<Link
 					to='/'
