@@ -45,7 +45,6 @@ const createComponent = (
   price,
   image: `https://example.com/${id}.jpg`,
   order: 0,
-  active: true,
 });
 
 describe('ConfigurationActions - Unit Tests', () => {

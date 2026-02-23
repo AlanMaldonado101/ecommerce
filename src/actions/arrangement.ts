@@ -28,8 +28,12 @@ export const getArrangementComponents = async (): Promise<ComponentItem[]> => {
 		throw new Error(error.message);
 	}
 
+	if (!data) {
+		return [];
+	}
+
 	// Transformar los datos de productos a ComponentItem
-	const components: ComponentItem[] = data.map(product => ({
+	const components: ComponentItem[] = (data as any[]).map(product => ({
 		id: product.id,
 		name: product.name,
 		category: product.component_category as ComponentCategory,
@@ -65,8 +69,12 @@ export const getArrangementComponentsByCategory = async (
 		throw new Error(error.message);
 	}
 
+	if (!data) {
+		return [];
+	}
+
 	// Transformar los datos de productos a ComponentItem
-	const components: ComponentItem[] = data.map(product => ({
+	const components: ComponentItem[] = (data as any[]).map(product => ({
 		id: product.id,
 		name: product.name,
 		category: product.component_category as ComponentCategory,

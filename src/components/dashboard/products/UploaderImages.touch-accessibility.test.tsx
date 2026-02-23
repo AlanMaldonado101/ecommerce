@@ -3,7 +3,6 @@ import { render, screen } from '@testing-library/react';
 import { UploaderImages } from './UploaderImages';
 import { useForm } from 'react-hook-form';
 import { ProductFormValues } from '../../../lib/validators';
-import userEvent from '@testing-library/user-event';
 
 // Wrapper component to provide form context
 const UploaderImagesWrapper = ({ initialImages = [] }: { initialImages?: any[] }) => {
@@ -53,7 +52,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
 			
-			const uploadLabel = container.querySelector('label');
+			const uploadLabel = container.querySelector('label') as HTMLElement;
 			
 			if (uploadLabel) {
 				const size = getTouchTargetSize(uploadLabel);
@@ -69,7 +68,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
 			
 			// Find delete button
-			const deleteButton = container.querySelector('button[type="button"]');
+			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
 			
 			if (deleteButton) {
 				const size = getTouchTargetSize(deleteButton);
@@ -121,7 +120,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
 			
-			const grid = container.querySelector('.grid');
+			const grid = container.querySelector('.grid') as HTMLElement;
 			
 			if (grid) {
 				const classes = grid.className;
@@ -139,7 +138,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
 			
-			const grid = container.querySelector('.grid');
+			const grid = container.querySelector('.grid') as HTMLElement;
 			
 			if (grid) {
 				const styles = window.getComputedStyle(grid);
@@ -156,7 +155,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
 			
-			const thumbnail = container.querySelector('.relative.h-24');
+			const thumbnail = container.querySelector('.relative.h-24') as HTMLElement;
 			
 			if (thumbnail) {
 				const size = getTouchTargetSize(thumbnail);
@@ -171,7 +170,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
 			
-			const uploadLabel = container.querySelector('label');
+			const uploadLabel = container.querySelector('label') as HTMLElement;
 			
 			if (uploadLabel) {
 				const classes = uploadLabel.className;
@@ -188,7 +187,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
 			
-			const deleteButton = container.querySelector('button[type="button"]');
+			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
 			
 			if (deleteButton) {
 				const classes = deleteButton.className;
@@ -221,7 +220,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
 			
-			const fileInput = container.querySelector('input[type="file"]');
+			const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
 			
 			expect(fileInput).toBeTruthy();
 			if (fileInput) {
@@ -233,7 +232,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
 			
-			const fileInput = container.querySelector('input[type="file"]');
+			const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
 			
 			expect(fileInput).toBeTruthy();
 			if (fileInput) {
@@ -283,7 +282,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
 			
-			const deleteButton = container.querySelector('button[type="button"]');
+			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
 			
 			if (deleteButton) {
 				const classes = deleteButton.className;
@@ -300,7 +299,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 			
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
 			
-			const deleteButton = container.querySelector('button[type="button"]');
+			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
 			
 			if (deleteButton) {
 				const classes = deleteButton.className;

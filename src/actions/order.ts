@@ -1,4 +1,4 @@
-import { OrderInput } from '../interfaces';
+import { OrderInput, MercadoPagoOrder } from '../interfaces';
 import { supabase } from '../supabase/client';
 
 export const createOrder = async (order: OrderInput) => {
@@ -202,7 +202,7 @@ export const getOrderById = async (orderId: string | number) => {
 		.from('orders')
 		.select('*')
 		.eq('customers_id', customerId)
-		.eq('id', orderId)
+		.eq('id', orderIdNum)
 		.single();
 
 	if (error) {
@@ -213,7 +213,7 @@ export const getOrderById = async (orderId: string | number) => {
 	const { data: orderItems, error: orderItemsError } = await supabase
 		.from('order_items')
 		.select('id, quantity, price')
-		.eq('order_id', orderId);
+		.eq('order_id', orderIdNum);
 
 	if (orderItemsError) {
 		console.log(orderItemsError);
@@ -371,41 +371,27 @@ export const getMercadoPagoOrderById = async (orderId: string) => {
 		throw new Error(error.message);
 	}
 
+	// Cast to MercadoPagoOrder type
+	const mpOrder = order as unknown as MercadoPagoOrder;
+
 	// Parse items from JSONB
-	const items = order.items as Array<{
-		variant_id: string;
-		quantity: number;
-		unit_price: number;
-		name: string;
-		image: string;
-	}>;
+	const items = mpOrder.items;
 
 	// Parse buyer data from JSONB
-	const buyerData = order.buyer_data as {
-		name: string;
-		email: string;
-		phone: string;
-		address: {
-			street: string;
-			number: string;
-			zipCode: string;
-			city: string;
-			state: string;
-		};
-	};
+	const buyerData = mpOrder.buyer_data;
 
 	return {
-		id: order.id,
-		orderNumber: order.order_number,
+		id: mpOrder.id,
+		orderNumber: mpOrder.order_number,
 		customer: {
 			email: buyerData.email,
 			full_name: buyerData.name,
 		},
-		totalAmount: order.total_amount,
-		status: order.status,
-		payment_method: order.payment_method,
-		created_at: order.created_at,
-		paid_at: order.paid_at,
+		totalAmount: mpOrder.total_amount,
+		status: mpOrder.status,
+		payment_method: mpOrder.payment_method,
+		created_at: mpOrder.created_at,
+		paid_at: mpOrder.paid_at,
 		address: {
 			addressLine1: buyerData.address.street,
 			addressLine2: buyerData.address.number,
