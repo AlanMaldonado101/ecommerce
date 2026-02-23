@@ -4,6 +4,7 @@ import { MdOutlineExpandMore } from 'react-icons/md';
 import { useGlobalStore } from '../../store/global.store';
 import { Link, NavLink } from 'react-router-dom';
 import { navbarLinks, type NavbarLinkItem } from '../../constants/links';
+import { Logo } from './Logo';
 
 function isDropdownLink(
 	link: NavbarLinkItem
@@ -18,26 +19,19 @@ export const NavbarMobile = () => {
 	);
 
 	return (
-		<div className="fixed z-50 flex h-screen w-full justify-center bg-background-light py-32 shadow-lg animate-slide-in-left text-slate-800">
+		<div className="fixed inset-0 z-50 flex h-screen w-screen justify-center bg-background-light py-20 px-4 shadow-lg animate-slide-in-left text-slate-800 overflow-y-auto overflow-x-hidden">
 			<button
 				type="button"
-				className="absolute right-5 top-5 text-slate-800"
+				className="absolute right-4 top-4 p-2 hover:bg-slate-200 rounded-full transition-colors text-slate-800 z-10"
 				onClick={() => setActiveNavMobile(false)}
 			>
-				<IoMdClose size={30} />
+				<IoMdClose size={24} />
 			</button>
 
 			<div className="flex flex-col gap-12">
-				<Link
-					to="/"
-					className="flex items-center gap-2 text-2xl font-extrabold tracking-tight text-primary"
-					onClick={() => setActiveNavMobile(false)}
-				>
-					<span className="material-icons-outlined text-3xl">
-						celebration
-					</span>
-					Cotillón
-				</Link>
+				<div onClick={() => setActiveNavMobile(false)}>
+					<Logo />
+				</div>
 
 				<nav className="flex flex-col items-center gap-2">
 					{navbarLinks.map(item => {

@@ -37,10 +37,10 @@ export const CategorySelect = ({ register, setValue, errors }: Props) => {
 			<label className='mb-2 block text-sm font-semibold text-slate-800'>
 				Categoría
 			</label>
-			<div className='flex gap-2'>
+			<div className='flex flex-col gap-2 md:flex-row'>
 				<select
 					{...register('category')}
-					className='flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary'
+					className='flex-1 rounded-md border border-slate-300 px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary'
 				>
 					<option value=''>Selecciona una categoría</option>
 					{categories.map(cat => (
@@ -66,7 +66,7 @@ export const CategorySelect = ({ register, setValue, errors }: Props) => {
 						onChange={e => setNewCategoryName(e.target.value)}
 						onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleCreateCategory(); } }}
 						placeholder='Nombre de la categoría'
-						className='flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary'
+						className='flex-1 rounded-md border border-slate-300 px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary'
 						disabled={isCreating}
 						autoFocus
 					/>

@@ -144,6 +144,8 @@ export const createProduct = async (productInput: ProductInput) => {
 				features: productInput.features ?? [],
 				description: productInput.description,
 				images: [],
+				component_category: productInput.component_category ?? null,
+				component_order: productInput.component_order ?? null,
 			})
 			.select()
 			.single();
@@ -297,6 +299,8 @@ export const updateProduct = async (
 			feature: productInput.features ?? [],
 			features: productInput.features ?? [],
 			description: productInput.description,
+			component_category: productInput.component_category ?? null,
+			component_order: productInput.component_order ?? null,
 		})
 		.eq('id', productId)
 		.select()

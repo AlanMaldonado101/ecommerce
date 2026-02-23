@@ -58,10 +58,10 @@ export const SubcategorySelect = ({ register, setValue, watch }: Props) => {
             <label className='mb-2 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500'>
                 Subcategoría
             </label>
-            <div className='flex gap-2'>
+            <div className='flex flex-col gap-2 md:flex-row'>
                 <select
                     {...register('subcategory_id')}
-                    className='flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary'
+                    className='flex-1 rounded-md border border-slate-300 px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary'
                     disabled={isLoadingSubcategories}
                 >
                     <option value=''>Seleccionar subcategoría...</option>
@@ -93,7 +93,7 @@ export const SubcategorySelect = ({ register, setValue, watch }: Props) => {
                             }
                         }}
                         placeholder='Nombre de la subcategoría'
-                        className='flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary'
+                        className='flex-1 rounded-md border border-slate-300 px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary'
                         disabled={isCreatingSubcategory}
                         autoFocus
                     />

@@ -53,7 +53,7 @@ export const InputForm = ({
 					type={type}
 					placeholder={placeholder}
 					id={name}
-					className={`py-1.5 text-sm px-3 font-medium tracking-tighter w-full text-slate-600 outline-none focus:outline-none ${className}`}
+					className={`py-2.5 md:py-2 text-sm md:text-base px-3 font-medium tracking-tighter w-full text-slate-600 outline-none focus:outline-none ${className}`}
 					autoComplete='off'
 					{...register(name)}
 				/>

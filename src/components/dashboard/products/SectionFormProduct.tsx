@@ -13,16 +13,16 @@ export const SectionFormProduct = ({
 }: Props) => {
 	return (
 		<div
-			className={`flex h-fit flex-col gap-4 rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm shadow-primary/5 ${className}`}
+			className={`flex h-fit flex-col gap-3 md:gap-4 rounded-xl md:rounded-2xl border border-slate-200 bg-white/90 p-4 md:p-5 lg:p-6 shadow-sm shadow-primary/5 ${className}`}
 		>
 			{titleSection && (
 				<div className='flex items-center gap-2'>
-					<span className='inline-flex h-8 w-8 items-center justify-center rounded-xl bg-primary/5 text-sm'>
-						<span className='material-icons-outlined text-primary text-base'>
+					<span className='inline-flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-xl bg-primary/5 text-xs md:text-sm'>
+						<span className='material-icons-outlined text-primary text-sm md:text-base'>
 							auto_awesome
 						</span>
 					</span>
-					<h2 className='text-sm font-extrabold uppercase tracking-[0.18em] text-slate-500'>
+					<h2 className='text-xs md:text-sm font-extrabold uppercase tracking-[0.15em] md:tracking-[0.18em] text-slate-500'>
 						{titleSection}
 					</h2>
 				</div>

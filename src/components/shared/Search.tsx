@@ -26,7 +26,7 @@ export const Search = () => {
 
 	return (
 		<>
-			<div className='py-5 px-7 flex gap-10 items-center border-b border-slate-200'>
+			<div className='relative py-5 px-7 pr-14 flex gap-3 items-center border-b border-slate-200'>
 				<form
 					className='flex gap-3 items-center flex-1'
 					onSubmit={handleSearch}
@@ -40,8 +40,8 @@ export const Search = () => {
 						onChange={e => setSearchTerm(e.target.value)}
 					/>
 				</form>
-				<button onClick={closeSheet}>
-					<IoMdClose size={25} className='text-black' />
+				<button onClick={closeSheet} className='absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-slate-100 rounded-full transition-colors'>
+					<IoMdClose size={22} className='text-slate-700' />
 				</button>
 			</div>
 

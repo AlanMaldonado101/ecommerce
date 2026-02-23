@@ -86,6 +86,8 @@ export interface ProductInput {
 	description: JSONContent;
 	images: File[];
 	variants: VariantInput[];
+	component_category?: 'BASE' | 'FLORES' | 'GLOBOS' | 'EXTRAS' | null;
+	component_order?: number | null;
 }
 
 export interface VariantInput {

@@ -73,7 +73,7 @@ export const UploaderImages = ({
 
 	return (
 		<>
-			<label className='relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/70 px-4 py-8 text-center transition hover:border-primary hover:bg-primary/5'>
+			<label className='relative flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/70 px-4 py-6 md:py-8 text-center transition hover:border-primary hover:bg-primary/5'>
 				<span className='mb-2 text-3xl'>📸</span>
 				<p className='text-sm font-semibold text-slate-700'>
 					Haz clic o arrastra imágenes
@@ -90,10 +90,10 @@ export const UploaderImages = ({
 				/>
 			</label>
 
-			<div className='mt-4 grid grid-cols-4 gap-4 lg:grid-cols-2'>
+			<div className='mt-4 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-2 md:gap-4'>
 				{images.map((image, index) => (
 					<div key={index}>
-						<div className='relative h-20 w-full rounded-lg border border-slate-200 bg-white p-1 shadow-sm lg:h-28'>
+						<div className='relative h-24 md:h-20 lg:h-28 w-full rounded-lg border border-slate-200 bg-white p-1 shadow-sm'>
 							<img
 								src={image.previewUrl}
 								alt={`Preview ${index}`}
@@ -102,10 +102,11 @@ export const UploaderImages = ({
 							<button
 								type='button'
 								onClick={() => handleRemoveImage(index)}
-								className='absolute -right-3 -top-3 z-10 flex justify-end transition-all hover:scale-110'
+								className='absolute -right-2 -top-2 z-10 flex h-11 w-11 items-center justify-center transition-all hover:scale-110'
+								aria-label={`Eliminar imagen ${index + 1}`}
 							>
 								<IoIosCloseCircleOutline
-									size={22}
+									size={28}
 									className='text-red-500'
 								/>
 							</button>

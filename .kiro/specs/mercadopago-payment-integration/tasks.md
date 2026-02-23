@@ -43,7 +43,7 @@ El plan sigue un enfoque incremental: primero se establece la infraestructura de
     - Configurar timeout de 30 segundos y retry con backoff exponencial
     - _Requirements: 18.1, 18.2, 18.3_
   
-  - [~] 2.2 Implementar funciones de utilidad
+  - [ ] 2.2 Implementar funciones de utilidad
     - Implementar validateOrderAmount() para validar y recalcular totales
     - Implementar generateOrderNumber() con formato ORD-YYYYMMDD-XXXXX
     - Implementar translateMercadoPagoError() con traducciones a español
@@ -64,11 +64,11 @@ El plan sigue un enfoque incremental: primero se establece la infraestructura de
     - Test para validateBuyerData con formatos válidos e inválidos
     - _Requirements: 6.3, 12.2, 13.1_
 
-- [~] 3. Checkpoint - Verificar infraestructura base
+- [ ] 3. Checkpoint - Verificar infraestructura base
   - Asegurar que todas las pruebas pasen, preguntar al usuario si surgen dudas.
 
 - [ ] 4. Implementar Edge Function para Checkout Pro
-  - [~] 4.1 Crear función create-preference en Supabase Edge Functions
+  - [ ] 4.1 Crear función create-preference en Supabase Edge Functions
     - Configurar endpoint POST /functions/v1/create-preference
     - Validar y parsear request body con items y payer data
     - Recalcular total basado en precios de base de datos
@@ -95,7 +95,7 @@ El plan sigue un enfoque incremental: primero se establece la infraestructura de
     - _Requirements: 1.1, 1.6, 13.2, 13.4_
 
 - [ ] 5. Implementar Edge Function para Checkout API
-  - [~] 5.1 Crear función process-payment en Supabase Edge Functions
+  - [ ] 5.1 Crear función process-payment en Supabase Edge Functions
     - Configurar endpoint POST /functions/v1/process-payment
     - Validar y parsear request body con token, items y payer data
     - Recalcular total basado en precios de base de datos
@@ -123,7 +123,7 @@ El plan sigue un enfoque incremental: primero se establece la infraestructura de
     - _Requirements: 2.6, 2.7, 2.8, 12.1_
 
 - [ ] 6. Implementar Edge Function para Webhook
-  - [~] 6.1 Crear función webhook-handler en Supabase Edge Functions
+  - [ ] 6.1 Crear función webhook-handler en Supabase Edge Functions
     - Configurar endpoint POST /functions/v1/webhook-handler como público
     - Validar firma x-signature del header
     - Retornar HTTP 401 si firma es inválida

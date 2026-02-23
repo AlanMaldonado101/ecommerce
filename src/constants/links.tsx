@@ -30,55 +30,12 @@ const categoryHref = (slugOrName: string) =>
 
 export const navbarLinks: NavbarLinkItem[] = [
 	{ id: 1, title: 'Inicio', href: '/' },
+	{ id: 2, title: 'ARMA TU ARREGLO', href: '/arma-tu-arreglo' },
+	{ id: 3, title: 'Globos', href: categoryHref('globos') },
+	{ id: 4, title: 'Repostería', href: categoryHref('reposteria') },
+	{ id: 5, title: 'Novedades', href: '/#novedades' },
 	{
-		id: 2,
-		title: 'Navidad',
-		children: [
-			{
-				title: 'Pack navideño',
-				href: categoryHref('navidad-pack-navideno'),
-			},
-			{
-				title: 'Decoración',
-				href: categoryHref('navidad-decoracion'),
-			},
-			{
-				title: 'Papel de regalo y sellos',
-				href: categoryHref('navidad-papel-de-regalo-y-sellos'),
-			},
-			{
-				title: 'Cinta y scotch',
-				href: categoryHref('navidad-cinta-y-scotch'),
-			},
-			{
-				title: 'Cajas',
-				href: categoryHref('navidad-cajas'),
-			},
-		],
-	},
-	{
-		id: 3,
-		title: 'Año nuevo',
-		children: [
-			{
-				title: 'Decoración',
-				href: categoryHref('ano-nuevo-decoracion'),
-			},
-			{
-				title: 'Lanza confetti',
-				href: categoryHref('ano-nuevo-lanza-confetti'),
-			},
-			{
-				title: 'Serpentina y nieve',
-				href: categoryHref('ano-nuevo-serpentina-y-nieve'),
-			},
-		],
-	},
-	{ id: 4, title: 'Globos', href: categoryHref('globos') },
-	{ id: 5, title: 'Repostería', href: categoryHref('reposteria') },
-	{ id: 6, title: 'Novedades', href: '/#novedades' },
-	{
-		id: 7,
+		id: 6,
 		title: 'Temporadas',
 		children: [
 			{
@@ -127,8 +84,6 @@ export const navbarLinks: NavbarLinkItem[] = [
 			},
 		],
 	},
-	{ id: 8, title: 'DESTACADO', href: '/#destacado' },
-	{ id: 9, title: 'OFERTAS', href: '/#ofertas' },
 ];
 
 export const socialLinks = [

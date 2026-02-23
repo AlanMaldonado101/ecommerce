@@ -21,6 +21,7 @@ import {
 	DashboardProductSlugPage,
 	DashboardOrdersPage,
 	DashboardOrderPage,
+	ArrangementBuilder,
 } from '../pages';
 import { ClientLayout } from '../layouts/ClientLayout';
 import { DashboardLayout } from '../layouts/DashboardLayout';
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
 			{
 				path: 'nosotros',
 				element: <AboutPage />,
+			},
+			{
+				path: 'arma-tu-arreglo',
+				element: <ArrangementBuilder />,
 			},
 			{
 				path: 'login',

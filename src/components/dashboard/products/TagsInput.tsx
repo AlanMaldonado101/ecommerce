@@ -46,7 +46,7 @@ export const TagsInput = ({ watch, setValue }: Props) => {
                     value={tagInput}
                     onChange={e => setTagInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    className='flex-1 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-medium tracking-tight text-slate-700 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20'
+                    className='flex-1 rounded-md border border-slate-200 bg-white px-3 py-2.5 md:py-2 text-sm md:text-base font-medium tracking-tight text-slate-700 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20'
                 />
                 <button
                     type='button'

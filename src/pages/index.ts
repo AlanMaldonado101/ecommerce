@@ -9,6 +9,7 @@ export * from './ThankyouPage';
 export * from './OrderUserPage';
 export * from './ForgotPasswordPage';
 export * from './ResetPasswordPage';
+export * from './ArrangementBuilder';
 
 /* ********************************** */
 /*           ACCOUNT PAGES             */

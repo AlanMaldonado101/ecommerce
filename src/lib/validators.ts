@@ -118,6 +118,19 @@ export const productSchema = z.object({
 		)
 		.min(1, 'Debe haber al menos una variante'),
 	images: z.array(z.any()).min(1, 'Debe haber al menos una imagen'),
-});
+	component_category: z.enum(['BASE', 'FLORES', 'GLOBOS', 'EXTRAS']).optional().nullable(),
+	component_order: z.number().int().min(0).optional().nullable(),
+}).refine(
+	data => {
+		if (data.category === 'componente-arreglo') {
+			return data.component_category != null;
+		}
+		return true;
+	},
+	{
+		message: 'La categoría de componente es obligatoria para productos de tipo "componente-arreglo"',
+		path: ['component_category'],
+	}
+);
 
 export type ProductFormValues = z.infer<typeof productSchema>;

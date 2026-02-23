@@ -47,6 +47,9 @@ export default {
 				'slide-in-left': 'slide-in-left 0.3s ease-out',
 				'spin-slow': 'spin 2s linear infinite',
 			},
+			spacing: {
+				safe: 'env(safe-area-inset-bottom)',
+			},
 		},
 	},
 	plugins: [require('@tailwindcss/typography')],

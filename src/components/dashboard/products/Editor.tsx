@@ -21,7 +21,7 @@ export const MenuBar = ({
 	editor: EditorType | null;
 }) => {
 	const buttonClass = (isActive: boolean) =>
-		`w-8 h-7 grid place-items-center  border text-sm rounded transition-all ${
+		`w-7 h-6 md:w-8 md:h-7 grid place-items-center border text-xs md:text-sm rounded transition-all ${
 			isActive
 				? 'border-blue-500 bg-blue-100 text-blue-700'
 				: 'border-gray-300 bg-white text-gray-600 hover:bg-gray-100'
@@ -32,7 +32,7 @@ export const MenuBar = ({
 	}
 
 	return (
-		<div className='flex flex-wrap gap-3'>
+		<div className='flex flex-wrap gap-2 md:gap-3'>
 			<button
 				onClick={() =>
 					editor.chain().focus().toggleHeading({ level: 1 }).run()
@@ -112,7 +112,7 @@ export const Editor = ({
 		editorProps: {
 			attributes: {
 				class:
-					'focus:outline-none min-h-[150px] prose prose-sm sm:prose-base',
+					'focus:outline-none min-h-[120px] md:min-h-[150px] prose prose-sm sm:prose-base',
 			},
 		},
 	});
