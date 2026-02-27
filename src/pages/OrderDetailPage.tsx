@@ -45,13 +45,13 @@ export const OrderDetailPage = () => {
 				const { data, error: fetchError } = await supabase
 					.from('orders')
 					.select('*')
-					.eq('id', id)
+					.eq('id', id as any)
 					.single();
 
 				if (fetchError) throw fetchError;
 				if (!data) throw new Error('Orden no encontrada');
 
-				setOrder(data as MercadoPagoOrder);
+				setOrder(data as unknown as MercadoPagoOrder);
 			} catch (err) {
 				console.error('Error fetching order:', err);
 				setError('No se pudo cargar la orden. Verifica que tengas permiso para acceder a ella.');
@@ -93,9 +93,8 @@ export const OrderDetailPage = () => {
 					<h1 className='text-3xl font-bold'>Pedido {order.order_number}</h1>
 					<p className='text-sm'>{formatDateLong(order.created_at)}</p>
 					<span
-						className={`px-3 py-1 rounded-full text-xs font-medium ${
-							statusColors[order.status] || 'bg-gray-100 text-gray-800'
-						}`}
+						className={`px-3 py-1 rounded-full text-xs font-medium ${statusColors[order.status] || 'bg-gray-100 text-gray-800'
+							}`}
 					>
 						{statusLabels[order.status] || order.status}
 					</span>

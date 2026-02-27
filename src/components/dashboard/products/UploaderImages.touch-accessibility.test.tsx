@@ -51,9 +51,9 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('upload area should have adequate touch target on mobile', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
-			
+
 			const uploadLabel = container.querySelector('label') as HTMLElement;
-			
+
 			if (uploadLabel) {
 				const size = getTouchTargetSize(uploadLabel);
 				// py-6 on mobile provides adequate height
@@ -64,12 +64,12 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('delete button should have minimum 44x44px touch target on mobile', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			// Find delete button
 			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
-			
+
 			if (deleteButton) {
 				const size = getTouchTargetSize(deleteButton);
 				// h-11 w-11 = 44px x 44px - exactly the minimum required
@@ -81,11 +81,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('delete button should have aria-label for accessibility', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const deleteButton = container.querySelector('button[aria-label]');
-			
+
 			expect(deleteButton).toBeTruthy();
 			if (deleteButton) {
 				expect(deleteButton).toHaveAttribute('aria-label');
@@ -96,9 +96,9 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('file input should be accessible for touch', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
-			
+
 			const fileInput = container.querySelector('input[type="file"]');
-			
+
 			expect(fileInput).toBeTruthy();
 			if (fileInput) {
 				// Input should cover the entire label area
@@ -117,11 +117,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 				'https://example.com/image1.jpg',
 				'https://example.com/image2.jpg',
 			];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const grid = container.querySelector('.grid') as HTMLElement;
-			
+
 			if (grid) {
 				const classes = grid.className;
 				// Should have grid-cols-2 for mobile
@@ -135,15 +135,15 @@ describe('UploaderImages - Touch Accessibility', () => {
 				'https://example.com/image1.jpg',
 				'https://example.com/image2.jpg',
 			];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const grid = container.querySelector('.grid') as HTMLElement;
-			
+
 			if (grid) {
 				const styles = window.getComputedStyle(grid);
 				const gap = parseFloat(styles.gap);
-				
+
 				// gap-3 = 12px on mobile - adequate spacing
 				expect(gap).toBeGreaterThanOrEqual(8);
 			}
@@ -152,11 +152,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('image thumbnails should have adequate size on mobile', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const thumbnail = container.querySelector('.relative.h-24') as HTMLElement;
-			
+
 			if (thumbnail) {
 				const size = getTouchTargetSize(thumbnail);
 				// h-24 = 96px - adequate for viewing
@@ -169,9 +169,9 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('upload area should have hover state', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
-			
+
 			const uploadLabel = container.querySelector('label') as HTMLElement;
-			
+
 			if (uploadLabel) {
 				const classes = uploadLabel.className;
 				// Should have hover states
@@ -184,11 +184,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('delete button should have hover state', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
-			
+
 			if (deleteButton) {
 				const classes = deleteButton.className;
 				// Should have hover scale animation
@@ -200,12 +200,12 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('delete button icon should be clearly visible', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			// Find the icon (IoIosCloseCircleOutline)
 			const icon = container.querySelector('svg');
-			
+
 			expect(icon).toBeTruthy();
 			if (icon) {
 				// Icon should be size 28 for visibility
@@ -219,9 +219,9 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('should accept multiple files', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
-			
+
 			const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
-			
+
 			expect(fileInput).toBeTruthy();
 			if (fileInput) {
 				expect(fileInput).toHaveAttribute('multiple');
@@ -231,9 +231,9 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('should accept image formats', () => {
 			setViewportWidth(375);
 			const { container } = render(<UploaderImagesWrapper />);
-			
+
 			const fileInput = container.querySelector('input[type="file"]') as HTMLInputElement;
-			
+
 			expect(fileInput).toBeTruthy();
 			if (fileInput) {
 				expect(fileInput).toHaveAttribute('accept', 'image/*');
@@ -243,7 +243,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('should show upload instructions on mobile', () => {
 			setViewportWidth(375);
 			render(<UploaderImagesWrapper />);
-			
+
 			expect(screen.getByText(/haz clic o arrastra imágenes/i)).toBeInTheDocument();
 			expect(screen.getByText(/png, jpg, webp/i)).toBeInTheDocument();
 		});
@@ -252,7 +252,7 @@ describe('UploaderImages - Touch Accessibility', () => {
 	describe('Error Handling', () => {
 		it('should display error message when no images and error exists', () => {
 			setViewportWidth(375);
-			const { setValue, watch, formState: { errors } } = useForm<ProductFormValues>({
+			const { setValue, watch } = useForm<ProductFormValues>({
 				defaultValues: {
 					images: [],
 				},
@@ -279,11 +279,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('delete button should be positioned at top-right corner', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
-			
+
 			if (deleteButton) {
 				const classes = deleteButton.className;
 				// Should be absolutely positioned at top-right
@@ -296,11 +296,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('delete button should have z-index for visibility', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const deleteButton = container.querySelector('button[type="button"]') as HTMLElement;
-			
+
 			if (deleteButton) {
 				const classes = deleteButton.className;
 				// Should have z-10 to be above image
@@ -311,11 +311,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 		it('images should be contained within thumbnails', () => {
 			setViewportWidth(375);
 			const initialImages = ['https://example.com/image1.jpg'];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const img = container.querySelector('img');
-			
+
 			if (img) {
 				const classes = img.className;
 				// Should have object-contain to prevent distortion
@@ -334,9 +334,9 @@ describe('UploaderImages - Touch Accessibility', () => {
 				'https://example.com/image2.jpg',
 				'https://example.com/image3.jpg',
 			];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const images = container.querySelectorAll('img');
 			expect(images.length).toBe(3);
 		});
@@ -347,9 +347,9 @@ describe('UploaderImages - Touch Accessibility', () => {
 				'https://example.com/image1.jpg',
 				'https://example.com/image2.jpg',
 			];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const deleteButtons = container.querySelectorAll('button[type="button"]');
 			expect(deleteButtons.length).toBe(2);
 		});
@@ -360,11 +360,11 @@ describe('UploaderImages - Touch Accessibility', () => {
 				'https://example.com/image1.jpg',
 				'https://example.com/image2.jpg',
 			];
-			
+
 			const { container } = render(<UploaderImagesWrapper initialImages={initialImages} />);
-			
+
 			const deleteButtons = container.querySelectorAll('button[aria-label]');
-			
+
 			deleteButtons.forEach((button, index) => {
 				const label = button.getAttribute('aria-label');
 				expect(label).toMatch(new RegExp(`eliminar imagen ${index + 1}`, 'i'));
