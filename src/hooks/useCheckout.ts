@@ -83,29 +83,38 @@ export function useCheckout(): UseCheckoutReturn {
     setError(null);
 
     try {
-      // Obtener sesión del usuario autenticado
+      // Get session explicitly to ensure auth token is available
       const { data: { session } } = await supabase.auth.getSession();
 
       if (!session) {
         throw new Error('No estás autenticado. Por favor inicia sesión.');
       }
 
-      // Llamar a la Edge Function create-preference
+      const supabaseUrl = import.meta.env.VITE_PROJECT_URL_SUPABASE;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
+
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-preference`,
+        `${supabaseUrl}/functions/v1/create-preference`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${session.access_token}`,
+            'apikey': supabaseKey,
           },
           body: JSON.stringify(data),
         }
       );
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al crear la preferencia de pago');
+        let message = 'Error al crear la preferencia de pago';
+        try {
+          const errorData = await response.json();
+          message = errorData.message || errorData.error || message;
+        } catch {
+          // ignore parse error
+        }
+        throw new Error(message);
       }
 
       const result: CreatePreferenceResponse = await response.json();

@@ -41,30 +41,24 @@ interface ProcessPaymentResponse {
 }
 
 async function processPayment(input: ProcessPaymentInput): Promise<ProcessPaymentResponse> {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data, error } = await supabase.functions.invoke('process-payment', {
+    body: input,
+  });
 
-  if (!session) {
-    throw new Error('No estás autenticado');
-  }
-
-  const response = await fetch(
-    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/process-payment`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify(input),
+  if (error) {
+    let message = 'Error al procesar el pago';
+    if (error.message) {
+      try {
+        const parsed = JSON.parse(error.message);
+        message = parsed.message || parsed.error || message;
+      } catch {
+        message = error.message;
+      }
     }
-  );
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Error al procesar el pago');
+    throw new Error(message);
   }
 
-  return response.json();
+  return data as ProcessPaymentResponse;
 }
 
 export const useProcessPayment = () => {

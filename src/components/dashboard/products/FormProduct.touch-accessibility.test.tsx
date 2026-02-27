@@ -62,10 +62,10 @@ const getTouchTargetSize = (element: HTMLElement) => {
 	const paddingBottom = parseFloat(styles.paddingBottom);
 	const paddingLeft = parseFloat(styles.paddingLeft);
 	const paddingRight = parseFloat(styles.paddingRight);
-	
+
 	// Get the element's dimensions
 	const rect = element.getBoundingClientRect();
-	
+
 	return {
 		width: rect.width,
 		height: rect.height,
@@ -75,22 +75,7 @@ const getTouchTargetSize = (element: HTMLElement) => {
 	};
 };
 
-// Helper to check spacing between elements
-const getSpacingBetween = (element1: HTMLElement, element2: HTMLElement): number => {
-	const rect1 = element1.getBoundingClientRect();
-	const rect2 = element2.getBoundingClientRect();
-	
-	// Calculate vertical spacing
-	if (rect1.bottom <= rect2.top) {
-		return rect2.top - rect1.bottom;
-	}
-	// Calculate horizontal spacing
-	if (rect1.right <= rect2.left) {
-		return rect2.left - rect1.right;
-	}
-	
-	return 0;
-};
+
 
 const renderFormProduct = () => {
 	const queryClient = new QueryClient({
@@ -117,10 +102,10 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('back button should have minimum 44px touch target on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
-			const backButton = screen.getByRole('button', { name: /back/i }) || 
-			                   document.querySelector('button[type="button"]');
-			
+
+			const backButton = screen.getByRole('button', { name: /back/i }) ||
+				document.querySelector('button[type="button"]');
+
 			expect(backButton).toBeTruthy();
 			if (backButton) {
 				const size = getTouchTargetSize(backButton as HTMLElement);
@@ -132,16 +117,16 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('action buttons should have minimum 44px height on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			// Mobile buttons are at the bottom
 			const cancelButton = screen.getAllByRole('button', { name: /cancelar/i })[1]; // Second one is mobile
 			const saveButton = screen.getAllByRole('button', { name: /guardar producto/i })[1];
-			
+
 			if (cancelButton) {
 				const size = getTouchTargetSize(cancelButton);
 				expect(size.height).toBeGreaterThanOrEqual(40); // btn classes provide adequate height
 			}
-			
+
 			if (saveButton) {
 				const size = getTouchTargetSize(saveButton);
 				expect(size.height).toBeGreaterThanOrEqual(40);
@@ -151,10 +136,10 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('text inputs should have minimum 44px height on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const nameInput = screen.getByPlaceholderText(/ejemplo: pack globos/i);
 			const size = getTouchTargetSize(nameInput);
-			
+
 			// py-2.5 on mobile = 10px top + 10px bottom = 20px padding
 			// Plus line height should give us adequate touch target
 			expect(size.height).toBeGreaterThanOrEqual(40);
@@ -163,10 +148,10 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('select dropdowns should have minimum 44px height on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const categorySelect = screen.getByTestId('category-select');
 			const size = getTouchTargetSize(categorySelect);
-			
+
 			// py-2.5 on mobile provides adequate height
 			expect(size.height).toBeGreaterThanOrEqual(40);
 		});
@@ -174,10 +159,10 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('crear temática button should have adequate touch target on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const createButton = screen.getByRole('button', { name: /crear temática/i });
 			const size = getTouchTargetSize(createButton);
-			
+
 			// Button has py-1 which is smaller, but should still be tappable
 			expect(size.height).toBeGreaterThanOrEqual(32); // Relaxed for compact button
 		});
@@ -185,13 +170,13 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('numeric inputs in costs section should have minimum 44px height on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const costInput = screen.getByPlaceholderText('150.00');
 			const marginInput = screen.getByPlaceholderText('40');
-			
+
 			const costSize = getTouchTargetSize(costInput);
 			const marginSize = getTouchTargetSize(marginInput);
-			
+
 			expect(costSize.height).toBeGreaterThanOrEqual(40);
 			expect(marginSize.height).toBeGreaterThanOrEqual(40);
 		});
@@ -199,10 +184,10 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('textarea should have adequate touch target on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const textarea = screen.getByPlaceholderText(/breve descripción para google/i);
 			const size = getTouchTargetSize(textarea);
-			
+
 			// Textarea with rows=3 should be tall enough
 			expect(size.height).toBeGreaterThanOrEqual(44);
 		});
@@ -212,12 +197,12 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('action buttons should have adequate spacing on mobile', () => {
 			setViewportWidth(375);
 			const { container } = renderFormProduct();
-			
+
 			// Find mobile button container
 			const mobileButtonContainer = container.querySelector('.md\\:hidden');
 			if (mobileButtonContainer) {
 				const buttons = within(mobileButtonContainer as HTMLElement).getAllByRole('button');
-				
+
 				if (buttons.length >= 2) {
 					// Container has gap-3 which is 12px - adequate spacing
 					const containerStyles = window.getComputedStyle(mobileButtonContainer as HTMLElement);
@@ -230,13 +215,13 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('input fields in grid should have adequate spacing', () => {
 			setViewportWidth(375);
 			const { container } = renderFormProduct();
-			
+
 			// Check grids with gap-3 (12px) on mobile
 			const grids = container.querySelectorAll('.grid');
 			grids.forEach(grid => {
 				const styles = window.getComputedStyle(grid);
 				const gap = parseFloat(styles.gap);
-				
+
 				// gap-3 = 12px, gap-4 = 16px - both are adequate
 				if (gap > 0) {
 					expect(gap).toBeGreaterThanOrEqual(8);
@@ -247,7 +232,7 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('crear temática button and occasions input should have spacing', () => {
 			setViewportWidth(375);
 			const { container } = renderFormProduct();
-			
+
 			// The container has flex with items-center justify-between
 			const occasionsContainer = container.querySelector('.flex.items-center.justify-between');
 			if (occasionsContainer) {
@@ -262,15 +247,15 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('select elements should have native mobile styling', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const categorySelect = screen.getByTestId('category-select');
 			const subcategorySelect = screen.getByTestId('subcategory-select');
-			
+
 			// Check that selects have proper classes for touch
 			expect(categorySelect).toHaveClass('rounded-md');
 			expect(categorySelect).toHaveClass('px-3');
 			expect(categorySelect).toHaveClass('py-2.5'); // Mobile padding
-			
+
 			expect(subcategorySelect).toHaveClass('rounded-md');
 			expect(subcategorySelect).toHaveClass('px-3');
 			expect(subcategorySelect).toHaveClass('py-2.5');
@@ -279,20 +264,20 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('provider select should have adequate touch target', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const providerSelect = screen.getByRole('combobox', { name: /proveedor/i });
 			const size = getTouchTargetSize(providerSelect);
-			
+
 			expect(size.height).toBeGreaterThanOrEqual(40);
 		});
 
 		it('selects should not be disabled unnecessarily', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const categorySelect = screen.getByTestId('category-select');
 			const subcategorySelect = screen.getByTestId('subcategory-select');
-			
+
 			// Selects should be enabled for interaction
 			expect(categorySelect).not.toBeDisabled();
 			expect(subcategorySelect).not.toBeDisabled();
@@ -303,9 +288,9 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('buttons should have hover/focus states defined', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const backButton = document.querySelector('button[type="button"]');
-			
+
 			if (backButton) {
 				const classes = backButton.className;
 				// Check for transition classes that provide visual feedback
@@ -316,10 +301,10 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('inputs should have focus ring styles', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const nameInput = screen.getByPlaceholderText(/ejemplo: pack globos/i);
 			const classes = nameInput.className;
-			
+
 			// Check for focus styles
 			expect(classes).toMatch(/focus:/);
 		});
@@ -327,9 +312,9 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('action buttons should have visual feedback classes', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const saveButton = screen.getAllByRole('button', { name: /guardar producto/i })[1];
-			
+
 			if (saveButton) {
 				const classes = saveButton.className;
 				// btn-primary should include hover states
@@ -340,10 +325,10 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('crear temática button should have hover state', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const createButton = screen.getByRole('button', { name: /crear temática/i });
 			const classes = createButton.className;
-			
+
 			expect(classes).toMatch(/hover:bg-primary/);
 			expect(classes).toMatch(/transition/);
 		});
@@ -351,9 +336,9 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('back button should have scale animation on hover', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const backButton = document.querySelector('button[type="button"]');
-			
+
 			if (backButton) {
 				const classes = backButton.className;
 				expect(classes).toMatch(/hover:scale/);
@@ -365,14 +350,14 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('numeric inputs should trigger numeric keyboard on mobile', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const costInput = screen.getByPlaceholderText('150.00');
 			const marginInput = screen.getByPlaceholderText('40');
-			
+
 			// Check for inputMode="numeric" attribute
 			expect(costInput).toHaveAttribute('inputMode', 'numeric');
 			expect(costInput).toHaveAttribute('type', 'number');
-			
+
 			expect(marginInput).toHaveAttribute('inputMode', 'numeric');
 			expect(marginInput).toHaveAttribute('type', 'number');
 		});
@@ -380,7 +365,7 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('form should not have horizontal overflow on mobile', () => {
 			setViewportWidth(375);
 			const { container } = renderFormProduct();
-			
+
 			const form = container.querySelector('form');
 			if (form) {
 				const hasOverflow = form.scrollWidth > form.clientWidth;
@@ -391,11 +376,11 @@ describe('FormProduct - Touch Accessibility', () => {
 		it('all interactive elements should be keyboard accessible', () => {
 			setViewportWidth(375);
 			renderFormProduct();
-			
+
 			const buttons = screen.getAllByRole('button');
 			const inputs = screen.getAllByRole('textbox');
 			const selects = screen.getAllByRole('combobox');
-			
+
 			// All interactive elements should be in the tab order
 			[...buttons, ...inputs, ...selects].forEach(element => {
 				expect(element).not.toHaveAttribute('tabIndex', '-1');

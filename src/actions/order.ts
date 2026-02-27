@@ -362,7 +362,7 @@ export const getMercadoPagoOrderById = async (orderId: string) => {
 	const { data: order, error } = await supabase
 		.from('orders')
 		.select('*')
-		.eq('id', orderId)
+		.eq('id', orderId as any)
 		.eq('buyer_id', userData.user.id)
 		.single();
 

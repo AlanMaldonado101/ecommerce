@@ -32,30 +32,42 @@ interface CreatePreferenceResponse {
 }
 
 async function createPreference(input: CreatePreferenceInput): Promise<CreatePreferenceResponse> {
+  // Get the session explicitly to ensure the token is available
   const { data: { session } } = await supabase.auth.getSession();
 
   if (!session) {
-    throw new Error('No estás autenticado');
+    throw new Error('No estás autenticado. Por favor inicia sesión.');
   }
 
+  const supabaseUrl = import.meta.env.VITE_PROJECT_URL_SUPABASE;
+  const supabaseKey = import.meta.env.VITE_SUPABASE_API_KEY;
+
   const response = await fetch(
-    `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-preference`,
+    `${supabaseUrl}/functions/v1/create-preference`,
     {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${session.access_token}`,
+        'apikey': supabaseKey,
       },
       body: JSON.stringify(input),
     }
   );
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || 'Error al crear la preferencia de pago');
+    let message = 'Error al crear la preferencia de pago';
+    try {
+      const errorData = await response.json();
+      // Show the exact error details so we can diagnose
+      message = errorData.details || errorData.message || errorData.error || message;
+    } catch {
+      // ignore parse error
+    }
+    throw new Error(`[${response.status}] ${message}`);
   }
 
-  return response.json();
+  return response.json() as Promise<CreatePreferenceResponse>;
 }
 
 export const useCreatePreference = () => {

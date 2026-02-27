@@ -49,13 +49,7 @@ const setViewportWidth = (width: number) => {
 	window.dispatchEvent(new Event('resize'));
 };
 
-// Helper to get computed grid columns
-const getComputedColumns = (element: HTMLElement): number => {
-	const style = window.getComputedStyle(element);
-	const gridTemplateColumns = style.gridTemplateColumns;
-	if (!gridTemplateColumns || gridTemplateColumns === 'none') return 1;
-	return gridTemplateColumns.split(' ').length;
-};
+
 
 // Helper to check if element has horizontal overflow
 const hasHorizontalOverflow = (element: HTMLElement): boolean => {
@@ -92,14 +86,14 @@ describe('FormProduct - Responsive Checkpoint', () => {
 			const { container } = renderFormProduct();
 			const form = container.querySelector('form');
 			expect(form).toBeTruthy();
-			
+
 			// Check that form has grid-cols-1 class
 			expect(form?.className).toContain('grid-cols-1');
 		});
 
 		it('should display action buttons at bottom of form', () => {
 			const { container } = renderFormProduct();
-			
+
 			// Mobile buttons should be visible (md:hidden class)
 			const mobileButtons = container.querySelector('.md\\:hidden');
 			expect(mobileButtons).toBeTruthy();
@@ -128,7 +122,7 @@ describe('FormProduct - Responsive Checkpoint', () => {
 		it('should have adequate touch targets for interactive elements', () => {
 			const { container } = renderFormProduct();
 			const buttons = container.querySelectorAll('button');
-			
+
 			// Check that buttons have minimum height (should be at least 44px or have adequate padding)
 			buttons.forEach(button => {
 				const styles = window.getComputedStyle(button);
@@ -148,14 +142,14 @@ describe('FormProduct - Responsive Checkpoint', () => {
 			const { container } = renderFormProduct();
 			const form = container.querySelector('form');
 			expect(form).toBeTruthy();
-			
+
 			// Check that form has md:grid-cols-2 class
 			expect(form?.className).toContain('md:grid-cols-2');
 		});
 
 		it('should display action buttons in header', () => {
 			const { container } = renderFormProduct();
-			
+
 			// Desktop buttons should be visible (hidden md:flex class)
 			const desktopButtons = container.querySelector('.hidden.md\\:flex');
 			expect(desktopButtons).toBeTruthy();
@@ -177,14 +171,14 @@ describe('FormProduct - Responsive Checkpoint', () => {
 			const { container } = renderFormProduct();
 			const form = container.querySelector('form');
 			expect(form).toBeTruthy();
-			
+
 			// Check that form has lg:grid-cols-3 class
 			expect(form?.className).toContain('lg:grid-cols-3');
 		});
 
 		it('should display action buttons in header', () => {
 			const { container } = renderFormProduct();
-			
+
 			// Desktop buttons should be visible
 			const desktopButtons = container.querySelector('.hidden.md\\:flex');
 			expect(desktopButtons).toBeTruthy();
@@ -227,19 +221,19 @@ describe('FormProduct - Responsive Checkpoint', () => {
 	describe('Interactive Elements Accessibility', () => {
 		it('should have accessible back button across all viewports', () => {
 			renderFormProduct();
-			
+
 			const backButtons = screen.getAllByRole('button');
-			const backButton = backButtons.find(btn => 
-				btn.querySelector('svg') !== null && 
+			const backButton = backButtons.find(btn =>
+				btn.querySelector('svg') !== null &&
 				btn.className.includes('p-1.5')
 			);
-			
+
 			expect(backButton).toBeTruthy();
 		});
 
 		it('should have accessible submit button across all viewports', () => {
 			renderFormProduct();
-			
+
 			const submitButton = screen.getByText('Guardar producto');
 			expect(submitButton).toBeTruthy();
 			expect(submitButton.getAttribute('type')).toBe('submit');
@@ -250,7 +244,7 @@ describe('FormProduct - Responsive Checkpoint', () => {
 		it('should have responsive padding on sections', () => {
 			const { container } = renderFormProduct();
 			const sections = container.querySelectorAll('.rounded-xl');
-			
+
 			sections.forEach(section => {
 				// Check for responsive padding classes
 				expect(section.className).toMatch(/p-4|md:p-5|lg:p-6/);
@@ -260,7 +254,7 @@ describe('FormProduct - Responsive Checkpoint', () => {
 		it('should have responsive gaps between sections', () => {
 			const { container } = renderFormProduct();
 			const form = container.querySelector('form');
-			
+
 			// Check for responsive gap classes
 			expect(form?.className).toMatch(/gap-4|md:gap-5|lg:gap-6/);
 		});
@@ -270,11 +264,11 @@ describe('FormProduct - Responsive Checkpoint', () => {
 		it('should have responsive text sizing on inputs', () => {
 			const { container } = renderFormProduct();
 			const inputs = container.querySelectorAll('input[type="text"]');
-			
+
 			inputs.forEach(input => {
 				// Check for responsive text sizing
-				const hasResponsiveText = 
-					input.className.includes('text-sm') || 
+				const hasResponsiveText =
+					input.className.includes('text-sm') ||
 					input.className.includes('md:text-base');
 				expect(hasResponsiveText).toBe(true);
 			});
@@ -284,11 +278,11 @@ describe('FormProduct - Responsive Checkpoint', () => {
 	describe('SEO Section Responsive Layout', () => {
 		it('should have responsive grid for SEO fields', () => {
 			const { container } = renderFormProduct();
-			
+
 			// Find SEO section by looking for the slug preview
 			const slugPreview = container.querySelector('.overflow-x-auto');
 			expect(slugPreview).toBeTruthy();
-			
+
 			// Check for responsive text sizing
 			expect(slugPreview?.className).toMatch(/text-\[10px\]|md:text-xs/);
 		});
@@ -297,7 +291,7 @@ describe('FormProduct - Responsive Checkpoint', () => {
 	describe('Costs Section Responsive Layout', () => {
 		it('should have responsive grid for cost inputs', () => {
 			const { container } = renderFormProduct();
-			
+
 			// Find cost inputs by looking for numeric inputs
 			const numericInputs = container.querySelectorAll('input[type="number"]');
 			expect(numericInputs.length).toBeGreaterThan(0);
@@ -305,7 +299,7 @@ describe('FormProduct - Responsive Checkpoint', () => {
 
 		it('should have inputMode numeric for cost fields', () => {
 			const { container } = renderFormProduct();
-			
+
 			// Find inputs with inputMode numeric
 			const numericInputs = container.querySelectorAll('input[inputMode="numeric"]');
 			expect(numericInputs.length).toBeGreaterThan(0);
@@ -315,7 +309,7 @@ describe('FormProduct - Responsive Checkpoint', () => {
 	describe('Occasions Input Responsive Behavior', () => {
 		it('should have responsive button sizing', () => {
 			renderFormProduct();
-			
+
 			const createButton = screen.getByText('+ Crear Temática');
 			expect(createButton).toBeTruthy();
 			expect(createButton.className).toMatch(/text-\[10px\]|md:text-xs/);
