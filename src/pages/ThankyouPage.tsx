@@ -170,8 +170,8 @@ export const ThankyouPage = () => {
 								<div className='flex items-center justify-between'>
 									<span className='text-sm text-slate-600'>Método de pago:</span>
 									<span className='text-sm font-semibold text-slate-700'>
-										{data.payment_method === 'checkout_pro' ? 'Mercado Pago' :
-										 data.payment_method === 'checkout_api' ? 'Tarjeta' : 'N/A'}
+										{(data as any).payment_method === 'checkout_pro' ? 'Mercado Pago' :
+										 (data as any).payment_method === 'checkout_api' ? 'Tarjeta' : 'N/A'}
 									</span>
 								</div>
 							</div>
@@ -241,3 +241,4 @@ export const ThankyouPage = () => {
 		</div>
 	);
 };
+
