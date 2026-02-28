@@ -218,4 +218,5 @@ El proyecto usa **Supabase** (PostgreSQL) con las siguientes tablas principales:
 
 <div align="center">
   <p>Hecho con ❤️ por <a href="https://github.com/AlanMaldonado101">Alan Maldonado</a></p>
-</div>
+</div>#   s a n t i a g o - m a t e s  
+ 
