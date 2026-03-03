@@ -76,6 +76,7 @@ export const PaymentResultPage = () => {
 	const isSuccess = pathname.includes('/success');
 	const isFailure = pathname.includes('/failure');
 	const isPending = pathname.includes('/pending');
+	const isCancelled = pathname.includes('/cancel');
 
 	return (
 		<div className='min-h-screen bg-gradient-to-b from-[#bbb9e9] via-[#fdf6fd] to-[#F4EEFF]'>
@@ -175,6 +176,29 @@ export const PaymentResultPage = () => {
 									to='/productos'
 									className='text-[#424874] hover:underline text-sm'
 								>
+									Seguir comprando
+								</Link>
+							</div>
+						</>
+					)}
+
+					{isCancelled && (
+						<>
+							<IoCloseCircle className='mx-auto text-slate-400 mb-4' size={64} />
+							<h1 className='text-2xl font-bold text-[#292524] mb-2'>
+								Pago cancelado
+							</h1>
+							<p className='text-[#64748b] mb-6'>
+								Cancelaste el proceso de pago. Tu carrito sigue guardado si deseas intentarlo de nuevo.
+							</p>
+							<div className='flex flex-col gap-3'>
+								<button
+									onClick={() => navigate('/checkout')}
+									className='btn-primary px-8 py-3'
+								>
+									Volver al checkout
+								</button>
+								<Link to='/productos' className='text-[#424874] hover:underline text-sm'>
 									Seguir comprando
 								</Link>
 							</div>

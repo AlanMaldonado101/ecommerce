@@ -157,21 +157,21 @@ export const ThankyouPage = () => {
 							<div className='space-y-2'>
 								<div className='flex items-center justify-between'>
 									<span className='text-sm text-slate-600'>Estado:</span>
-									<span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-										data.status === 'paid' ? 'bg-emerald-100 text-emerald-700' :
-										data.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-										'bg-red-100 text-red-700'
-									}`}>
+									<span className={`rounded-full px-3 py-1 text-xs font-semibold ${data.status === 'paid' ? 'bg-emerald-100 text-emerald-700' :
+											data.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+												'bg-red-100 text-red-700'
+										}`}>
 										{data.status === 'paid' ? 'Pagado' :
-										 data.status === 'pending' ? 'Pendiente' :
-										 data.status === 'failed' ? 'Rechazado' : 'Cancelado'}
+											data.status === 'pending' ? 'Pendiente' :
+												data.status === 'failed' ? 'Rechazado' : 'Cancelado'}
 									</span>
 								</div>
 								<div className='flex items-center justify-between'>
 									<span className='text-sm text-slate-600'>Método de pago:</span>
 									<span className='text-sm font-semibold text-slate-700'>
 										{(data as any).payment_method === 'checkout_pro' ? 'Mercado Pago' :
-										 (data as any).payment_method === 'checkout_api' ? 'Tarjeta' : 'N/A'}
+											(data as any).payment_method === 'stripe' ? 'Stripe' :
+												(data as any).payment_method === 'checkout_api' ? 'Tarjeta' : 'N/A'}
 									</span>
 								</div>
 							</div>

@@ -121,6 +121,10 @@ export const router = createBrowserRouter([
 		element: <PaymentResultPage />,
 	},
 	{
+		path: '/checkout/cancel',
+		element: <PaymentResultPage />,
+	},
+	{
 		path: '/dashboard',
 		element: <DashboardLayout />,
 		children: [

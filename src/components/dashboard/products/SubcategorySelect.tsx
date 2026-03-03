@@ -74,14 +74,14 @@ export const SubcategorySelect = ({ register, setValue, watch }: Props) => {
                 <button
                     type='button'
                     onClick={() => setShowNewSubcategory(!showNewSubcategory)}
-                    className='shrink-0 rounded-md border border-primary/30 px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10'
+                    className='w-full md:w-auto shrink-0 rounded-md border border-primary/30 px-3 py-2 text-xs font-medium text-primary transition-colors hover:bg-primary/10'
                 >
-                    + Nueva
+                    + Nueva subcategoría
                 </button>
             </div>
 
             {showNewSubcategory && (
-                <div className='mt-3 flex gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3'>
+                <div className='mt-3 flex flex-col gap-2 rounded-lg border border-primary/20 bg-primary/5 p-3'>
                     <input
                         type='text'
                         value={newSubcategoryName}
@@ -93,28 +93,30 @@ export const SubcategorySelect = ({ register, setValue, watch }: Props) => {
                             }
                         }}
                         placeholder='Nombre de la subcategoría'
-                        className='flex-1 rounded-md border border-slate-300 px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary'
+                        className='w-full rounded-md border border-slate-300 px-3 py-2.5 md:py-2 text-sm md:text-base focus:outline-none focus:ring-2 focus:ring-primary'
                         disabled={isCreatingSubcategory}
                         autoFocus
                     />
-                    <button
-                        type='button'
-                        onClick={handleCreateSubcategory}
-                        disabled={isCreatingSubcategory || !newSubcategoryName.trim()}
-                        className='rounded-md bg-primary px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 disabled:opacity-50'
-                    >
-                        {isCreatingSubcategory ? 'Creando...' : 'Crear'}
-                    </button>
-                    <button
-                        type='button'
-                        onClick={() => {
-                            setShowNewSubcategory(false);
-                            setNewSubcategoryName('');
-                        }}
-                        className='rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100'
-                    >
-                        Cancelar
-                    </button>
+                    <div className='flex gap-2'>
+                        <button
+                            type='button'
+                            onClick={handleCreateSubcategory}
+                            disabled={isCreatingSubcategory || !newSubcategoryName.trim()}
+                            className='flex-1 rounded-md bg-primary px-4 py-2.5 md:py-2 text-sm font-medium text-white transition-colors hover:bg-primary/90 disabled:opacity-50'
+                        >
+                            {isCreatingSubcategory ? 'Creando...' : 'Crear'}
+                        </button>
+                        <button
+                            type='button'
+                            onClick={() => {
+                                setShowNewSubcategory(false);
+                                setNewSubcategoryName('');
+                            }}
+                            className='flex-1 rounded-md border border-slate-300 px-3 py-2.5 md:py-2 text-sm font-medium text-slate-600 hover:bg-slate-100'
+                        >
+                            Cancelar
+                        </button>
+                    </div>
                 </div>
             )}
         </div>

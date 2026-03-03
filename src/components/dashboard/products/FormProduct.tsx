@@ -377,7 +377,7 @@ export const FormProduct = ({ titleForm }: Props) => {
 									<p className='flex items-start gap-2'>
 										<span className='text-base'>💐</span>
 										<span>
-											Este producto aparecerá en el constructor de "Arma tu Arreglo". 
+											Este producto aparecerá en el constructor de "Arma tu Arreglo".
 											Los clientes podrán seleccionarlo para personalizar sus arreglos.
 										</span>
 									</p>
@@ -537,7 +537,7 @@ export const FormProduct = ({ titleForm }: Props) => {
 					>
 						Cancelar
 					</button>
-					<button className='btn-primary w-full' type='submit'>
+					<button className='btn-primary w-full' type='submit' form='product-form'>
 						Guardar producto
 					</button>
 				</div>

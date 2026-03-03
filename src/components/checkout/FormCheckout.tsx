@@ -8,8 +8,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ItemsCheckout } from './ItemsCheckout';
 import { useUser } from '../../hooks/auth/useUser';
 import { MercadoPagoCheckout } from './MercadoPagoCheckout';
+import { StripeCheckout } from './StripeCheckout';
 import { PaymentMethodSelector } from './PaymentMethodSelector';
 import { useState } from 'react';
+
+type PaymentMethod = 'stripe' | 'checkout_pro';
 
 export const FormCheckout = () => {
 	const {
@@ -21,12 +24,27 @@ export const FormCheckout = () => {
 	});
 
 	const [addressData, setAddressData] = useState<AddressFormValues | null>(null);
-	const [paymentMethod, setPaymentMethod] = useState<'checkout_pro' | 'checkout_api'>('checkout_pro');
+	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('stripe');
 	const { session } = useUser();
 
 	const onSubmit = handleSubmit(data => {
 		setAddressData(data);
 	});
+
+	const buyerData = addressData
+		? {
+			name: session?.user?.user_metadata?.full_name || '',
+			email: session?.user?.email || '',
+			phone: session?.user?.user_metadata?.phone || '',
+			address: {
+				street: addressData.addressLine1,
+				number: addressData.addressLine2 || '',
+				zipCode: addressData.postalCode || '',
+				city: addressData.city,
+				state: addressData.state,
+			},
+		}
+		: null;
 
 	return (
 		<div className='glass-card p-6 md:p-8'>
@@ -119,38 +137,19 @@ export const FormCheckout = () => {
 				</form>
 
 				{/* Payment section - OUTSIDE the form to avoid nesting */}
-				{addressData && (
+				{addressData && buyerData && (
 					<div className='flex flex-col gap-5 rounded-2xl bg-white/90 p-5'>
 						<PaymentMethodSelector
 							selectedMethod={paymentMethod}
 							onMethodChange={setPaymentMethod}
 						/>
 
-						{paymentMethod === 'checkout_pro' && (
-							<MercadoPagoCheckout
-								buyerData={{
-									name: session?.user?.user_metadata?.full_name || '',
-									email: session?.user?.email || '',
-									phone: session?.user?.user_metadata?.phone || '',
-									address: {
-										street: addressData.addressLine1,
-										number: addressData.addressLine2 || '',
-										zipCode: addressData.postalCode || '',
-										city: addressData.city,
-										state: addressData.state,
-									},
-								}}
-							/>
+						{paymentMethod === 'stripe' && (
+							<StripeCheckout buyerData={buyerData} />
 						)}
 
-						{paymentMethod === 'checkout_api' && (
-							<div className='flex flex-col gap-4'>
-								<div className='rounded-lg border border-amber-200 bg-amber-50 p-4'>
-									<p className='text-xs text-amber-800'>
-										<strong>Próximamente:</strong> El pago directo con tarjeta estará disponible pronto. Por ahora, selecciona "Mercado Pago (Redirigir)" para pagar con tarjeta de crédito/débito en la página de Mercado Pago.
-									</p>
-								</div>
-							</div>
+						{paymentMethod === 'checkout_pro' && (
+							<MercadoPagoCheckout buyerData={buyerData} />
 						)}
 					</div>
 				)}
