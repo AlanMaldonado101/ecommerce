@@ -4,6 +4,8 @@ import { VariantProduct } from '../../interfaces';
 import { formatPrice } from '../../helpers';
 import { Tag } from '../shared/Tag';
 import { useCartStore } from '../../store/cart.store';
+import { useWishlistStore } from '../../store/wishlist.store';
+import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 
 interface Props {
@@ -27,6 +29,9 @@ export const CardProduct = ({
 }: Props) => {
 	const [activeColor, setActiveColor] = useState(colors[0]);
 	const addItem = useCartStore(state => state.addItem);
+	const { toggleItem, isInWishlist } = useWishlistStore();
+
+	const isFavorite = isInWishlist(slug);
 
 	const selectedVariant = variants.find(
 		v => v.color === activeColor.color
@@ -81,12 +86,25 @@ export const CardProduct = ({
 					<div className="absolute right-3 top-3">
 						<button
 							type="button"
-							onClick={e => e.preventDefault()}
-							className="flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm text-slate-400 transition-colors hover:text-red-400"
+							onClick={e => {
+								e.preventDefault();
+								toggleItem({
+									id: slug,
+									slug,
+									name,
+									price,
+									image: img,
+									colors,
+									variants,
+								});
+							}}
+							className={`flex h-8 w-8 items-center justify-center rounded-full bg-white/90 shadow-sm transition-colors hover:text-red-400 ${isFavorite ? 'text-red-500' : 'text-slate-400'}`}
 						>
-							<span className="material-icons-outlined text-sm">
-								favorite_border
-							</span>
+							{isFavorite ? (
+								<HiHeart className="text-sm" />
+							) : (
+								<HiOutlineHeart className="text-sm" />
+							)}
 						</button>
 					</div>
 					{stock === 0 && (
@@ -153,12 +171,25 @@ export const CardProduct = ({
 				)}
 				<button
 					type="button"
-					className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-400 shadow transition-colors hover:text-red-400"
-					onClick={e => e.preventDefault()}
+					className={`absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 shadow transition-colors hover:text-red-400 ${isFavorite ? 'text-red-500' : 'text-slate-400'}`}
+					onClick={e => {
+						e.preventDefault();
+						toggleItem({
+							id: slug,
+							slug,
+							name,
+							price,
+							image: img,
+							colors,
+							variants,
+						});
+					}}
 				>
-					<span className="material-icons-outlined text-xl">
-						favorite_border
-					</span>
+					{isFavorite ? (
+						<HiHeart className="text-xl" />
+					) : (
+						<HiOutlineHeart className="text-xl" />
+					)}
 				</button>
 			</Link>
 			<div className="p-6">

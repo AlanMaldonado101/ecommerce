@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useOrders, useHomeProducts } from '../../hooks';
+import { useOrders } from '../../hooks';
 import { Loader } from '../../components/shared/Loader';
 import {
 	formatDateShort,
@@ -8,47 +8,28 @@ import {
 	formatOrderId,
 	getStatus,
 	getStatusBadgeClass,
-	prepareProducts,
 } from '../../helpers';
-import { OrderItemSingle, Product } from '../../interfaces';
-import type { PreparedProducts } from '../../interfaces';
+import { OrderItemSingle } from '../../interfaces';
 import { HiOutlineTruck } from 'react-icons/hi2';
-import { HiOutlineHeart } from 'react-icons/hi';
+import { HiOutlineHeart, HiHeart } from 'react-icons/hi';
 import { BiSolidCoupon } from 'react-icons/bi';
 import { useCartStore } from '../../store/cart.store';
+import { useWishlistStore } from '../../store/wishlist.store';
 import toast from 'react-hot-toast';
 
 export const AccountDashboardPage = () => {
 	const { data: orders = [], isLoading: isLoadingOrders } = useOrders();
-	const { recentProducts = [] } = useHomeProducts();
 	const [couponBannerDismissed, setCouponBannerDismissed] = useState(false);
 	const addItem = useCartStore(state => state.addItem);
 	const navigate = useNavigate();
 
-	if (isLoadingOrders) return <Loader />;
-
-	const recentOrders = [...orders].slice(0, 3);
-	const preparedProducts = recentProducts.length > 0 ? prepareProducts(recentProducts as Product[]) : [] as PreparedProducts[];
-	const wishlistCount = 0; // Placeholder - no wishlist feature yet
+	const { items: wishlistItems, removeItem: removeWishlistItem } = useWishlistStore();
+	const wishlistCount = wishlistItems.length;
 	const couponCount = 2; // Placeholder
 
-	const handleAddToCart = (e: React.MouseEvent, product: PreparedProducts) => {
-		e.preventDefault();
-		const variant = product.variants[0];
-		if (variant && variant.stock > 0) {
-			addItem({
-				variantId: variant.id,
-				productId: product.slug,
-				name: product.name,
-				image: product.images[0] ?? '',
-				color: variant.color_name,
-				storage: variant.storage,
-				price: variant.price,
-				quantity: 1,
-			});
-			toast.success('Producto añadido al carrito', { position: 'bottom-right' });
-		}
-	};
+	const recentOrders = [...orders].slice(0, 3);
+
+	if (isLoadingOrders) return <Loader />;
 
 	return (
 		<div className="space-y-8">
@@ -181,38 +162,56 @@ export const AccountDashboardPage = () => {
 					</Link>
 				</div>
 				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-					{preparedProducts.slice(0, 3).map(product => {
-						const variant = product.variants[0];
-						const price = variant?.price ?? product.price;
+					{wishlistItems.slice(0, 3).map(item => {
+						const variant = item.variants?.[0];
 						return (
 							<div
-								key={product.id}
+								key={item.id}
 								className="group overflow-hidden rounded-2xl border border-primary/10 bg-white p-4 shadow-sm transition-all hover:shadow-md"
 							>
 								<div className="relative mb-4 flex h-32 items-center justify-center overflow-hidden rounded-xl bg-accent-peach/10">
 									<img
-										src={product.images?.[0] ?? ''}
-										alt={product.name}
+										src={item.image}
+										alt={item.name}
 										className="h-full max-h-24 w-auto object-contain"
 									/>
 									<button
 										type="button"
-										className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-400 shadow-sm transition-colors hover:text-red-400"
+										onClick={(e) => {
+											e.preventDefault();
+											removeWishlistItem(item.slug);
+										}}
+										className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-red-500 shadow-sm transition-colors hover:text-slate-400"
 									>
-										<span className="material-icons-outlined text-sm">
-											favorite
-										</span>
+										<HiHeart className="text-sm" />
 									</button>
 								</div>
 								<h3 className="mb-1 font-semibold text-[#292524] line-clamp-1">
-									{product.name}
+									{item.name}
 								</h3>
 								<p className="mb-3 text-sm font-semibold text-primary">
-									{formatPrice(price)}
+									{formatPrice(item.price)}
 								</p>
 								<button
 									type="button"
-									onClick={e => handleAddToCart(e, product)}
+									onClick={e => {
+										e.preventDefault();
+										if (variant && variant.stock > 0) {
+											addItem({
+												variantId: variant.id,
+												productId: item.slug,
+												name: item.name,
+												image: item.image,
+												color: variant.color_name,
+												storage: variant.storage,
+												price: variant.price,
+												quantity: 1,
+											});
+											toast.success('Producto añadido al carrito', { position: 'bottom-right' });
+										} else {
+											toast.error('Producto sin stock', { position: 'bottom-right' });
+										}
+									}}
 									className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary/15 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary hover:text-white"
 								>
 									<span className="material-icons-outlined text-base">

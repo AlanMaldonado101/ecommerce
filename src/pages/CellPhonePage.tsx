@@ -6,6 +6,8 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { BsChatLeftText } from 'react-icons/bs';
 import { ProductDescription } from '../components/one-product/ProductDescription';
 import { GridImages } from '../components/one-product/GridImages';
+import { ProductReviews } from '../components/products/ProductReviews';
+import { RelatedProducts } from '../components/products/RelatedProducts';
 import { useProduct } from '../hooks/products/useProduct';
 import { useEffect, useMemo, useState } from 'react';
 import { VariantProduct } from '../interfaces';
@@ -13,6 +15,8 @@ import { Tag } from '../components/shared/Tag';
 import { Loader } from '../components/shared/Loader';
 import { useCounterStore } from '../store/counter.store';
 import { useCartStore } from '../store/cart.store';
+import { useWishlistStore } from '../store/wishlist.store';
+import { HiHeart, HiOutlineHeart } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 
 interface Acc {
@@ -47,6 +51,9 @@ export const CellPhonePage = () => {
 	const decrement = useCounterStore(state => state.decrement);
 
 	const addItem = useCartStore(state => state.addItem);
+
+	const { toggleItem, isInWishlist } = useWishlistStore();
+	const isFavorite = currentSlug ? isInWishlist(currentSlug) : false;
 
 	const navigate = useNavigate();
 
@@ -105,6 +112,12 @@ export const CellPhonePage = () => {
 	// Obtener el stock
 	const isOutOfStock = selectedVariant?.stock === 0;
 
+	// Calcular el precio actual basado en la cantidad
+	const basePrice = selectedVariant?.price || product?.variants[0]?.price || 0;
+	const wholesaleDiscountAmount = selectedVariant?.price_wholesale || product?.variants[0]?.price_wholesale || 0;
+	const isWholesale = count >= 4 && wholesaleDiscountAmount > 0;
+	const currentPrice = isWholesale ? wholesaleDiscountAmount : basePrice;
+
 	// Función para añadir al carrito
 	const addToCart = () => {
 		if (selectedVariant) {
@@ -115,7 +128,7 @@ export const CellPhonePage = () => {
 				image: product?.images[0] || '',
 				color: selectedVariant.color_name,
 				storage: selectedVariant.storage,
-				price: selectedVariant.price,
+				price: currentPrice,
 				quantity: count,
 			});
 			toast.success('Producto añadido al carrito', {
@@ -134,11 +147,28 @@ export const CellPhonePage = () => {
 				image: product?.images[0] || '',
 				color: selectedVariant.color_name,
 				storage: selectedVariant.storage,
-				price: selectedVariant.price,
+				price: currentPrice,
 				quantity: count,
 			});
 
 			navigate('/checkout');
+		}
+	};
+
+	const toggleFavorite = () => {
+		if (product && currentSlug) {
+			toggleItem({
+				id: currentSlug,
+				slug: currentSlug,
+				name: product.name,
+				price: selectedVariant?.price || product.variants[0].price,
+				image: product.images[0],
+				colors: Object.entries(colors).map(([colorHex, data]) => ({
+					name: data.name,
+					color: colorHex,
+				})),
+				variants: product.variants,
+			});
 		}
 	};
 
@@ -168,16 +198,33 @@ export const CellPhonePage = () => {
 				<GridImages images={product.images} />
 
 				<div className='flex-1 space-y-5'>
-					<h1 className='text-3xl font-bold tracking-tight'>
-						{product.name}
-					</h1>
+					<div className="flex justify-between items-start">
+						<h1 className='text-3xl font-bold tracking-tight'>
+							{product.name}
+						</h1>
+						<button
+							className={`flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 transition-colors hover:bg-slate-200 ${isFavorite ? 'text-red-500' : 'text-slate-400'}`}
+							onClick={toggleFavorite}
+						>
+							{isFavorite ? (
+								<HiHeart className="text-xl" />
+							) : (
+								<HiOutlineHeart className="text-xl" />
+							)}
+						</button>
+					</div>
 
 					<div className='flex gap-5 items-center'>
-						<span className='tracking-wide text-lg font-semibold'>
-							{formatPrice(
-								selectedVariant?.price || product.variants[0].price
+						<div className='flex flex-col'>
+							<span className='tracking-wide text-lg font-semibold'>
+								{formatPrice(currentPrice)}
+							</span>
+							{isWholesale && (
+								<span className='text-xs font-semibold text-primary/80 mt-1 bg-primary/10 px-2 py-0.5 rounded w-fit'>
+									Precio por mayor aplicado
+								</span>
 							)}
-						</span>
+						</div>
 
 						<div className='relative'>
 							{isOutOfStock && <Tag contentTag='agotado' />}
@@ -270,6 +317,12 @@ export const CellPhonePage = () => {
 										<LuPlus size={15} />
 									</button>
 								</div>
+
+								{wholesaleDiscountAmount > 0 && (
+									<p className="text-xs text-slate-500 max-w-[200px]">
+										* Precio por mayor a partir de 4 unidades
+									</p>
+								)}
 							</div>
 
 							{/* BOTONES ACCIÓN */}
@@ -314,6 +367,12 @@ export const CellPhonePage = () => {
 
 			{/* DESCRIPCIÓN */}
 			<ProductDescription content={product.description} />
+
+			{/* RESEÑAS */}
+			<ProductReviews productId={product.id} />
+
+			{/* PRODUCTOS RELACIONADOS */}
+			<RelatedProducts />
 		</>
 	);
 };
