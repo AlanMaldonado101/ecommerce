@@ -1,4 +1,4 @@
-type PaymentMethod = 'stripe' | 'checkout_pro';
+export type PaymentMethod = 'webpay' | 'checkout_pro';
 
 interface PaymentMethodSelectorProps {
   selectedMethod: PaymentMethod;
@@ -6,13 +6,13 @@ interface PaymentMethodSelectorProps {
 }
 
 const methodConfig: Record<PaymentMethod, { label: string; description: string }> = {
-  stripe: {
-    label: 'Tarjeta de Crédito / Débito',
-    description: 'Paga de forma segura con Stripe (Visa, Mastercard, Amex, etc.)',
+  webpay: {
+    label: 'Webpay Plus (Tarjetas / Redcompra)',
+    description: 'Paga de forma segura con Webpay de Transbank.',
   },
   checkout_pro: {
     label: 'Mercado Pago',
-    description: 'Serás redirigido a Mercado Pago para completar el pago',
+    description: 'Serás redirigido a Mercado Pago para completar el pago.',
   },
 };
 

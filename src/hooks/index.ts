@@ -14,6 +14,7 @@ export * from './products/useProduct';
 export * from './products/useDeleteProduct';
 export * from './products/useUpdateProduct';
 export * from './products/useAttributes';
+export * from './products/usePriceRange';
 
 /* ********************************** */
 /*                AUTH                */
@@ -37,5 +38,4 @@ export * from './orders/useOrderAdmin';
 /* ********************************** */
 /*              PAYMENTS              */
 /* ********************************** */
-export * from './payments/useCreatePreference';
 export * from './payments/useProcessPayment';

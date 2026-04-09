@@ -117,6 +117,7 @@ export class MercadoPagoClient {
 
       if (!response.ok) {
         const error = await response.json();
+        console.error(`[MercadoPagoClient] Error CreatePreference:`, JSON.stringify(error, null, 2));
         throw new Error(`Mercado Pago API error: ${error.message || response.statusText}`);
       }
 

@@ -5,6 +5,7 @@ import {
 	FaInstagram,
 	FaTiktok,
 	FaXTwitter,
+	FaCalendarDay,
 } from 'react-icons/fa6';
 
 export type NavbarLinkItem =
@@ -125,5 +126,11 @@ export const dashboardLinks = [
 		title: 'Ordenes',
 		href: '/dashboard/ordenes',
 		icon: <FaCartShopping size={25} />,
+	},
+	{
+		id: 3,
+		title: 'Ocasiones',
+		href: '/dashboard/ocasiones',
+		icon: <FaCalendarDay size={25} />,
 	},
 ];

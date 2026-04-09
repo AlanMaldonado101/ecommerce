@@ -57,7 +57,7 @@ export const Footer = () => {
 						<ul className="space-y-4 text-sm">
 							<li>
 								<Link
-									to="#"
+									to="/seguimiento"
 									className="transition-colors hover:text-primary"
 								>
 									Seguimiento de pedido
@@ -65,7 +65,7 @@ export const Footer = () => {
 							</li>
 							<li>
 								<Link
-									to="#"
+									to="/envios"
 									className="transition-colors hover:text-primary"
 								>
 									Envíos
@@ -73,7 +73,7 @@ export const Footer = () => {
 							</li>
 							<li>
 								<Link
-									to="#"
+									to="/devoluciones"
 									className="transition-colors hover:text-primary"
 								>
 									Devoluciones
@@ -81,7 +81,7 @@ export const Footer = () => {
 							</li>
 							<li>
 								<Link
-									to="#"
+									to="/contacto"
 									className="transition-colors hover:text-primary"
 								>
 									Contacto

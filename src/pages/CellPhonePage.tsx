@@ -49,6 +49,7 @@ export const CellPhonePage = () => {
 	const count = useCounterStore(state => state.count);
 	const increment = useCounterStore(state => state.increment);
 	const decrement = useCounterStore(state => state.decrement);
+	const setCount = useCounterStore(state => state.setCount);
 
 	const addItem = useCartStore(state => state.addItem);
 
@@ -110,7 +111,17 @@ export const CellPhonePage = () => {
 	}, [selectedColor, selectedStorage, product?.variants]);
 
 	// Obtener el stock
-	const isOutOfStock = selectedVariant?.stock === 0;
+	const stock = selectedVariant?.stock || 0;
+	const isOutOfStock = selectedVariant ? stock === 0 : false;
+
+	// Limitar la cantidad seleccionada si cambia el stock
+	useEffect(() => {
+		if (selectedVariant && count > stock && stock > 0) {
+			setCount(stock);
+		} else if (selectedVariant && isOutOfStock) {
+			setCount(1);
+		}
+	}, [selectedVariant, count, stock, isOutOfStock, setCount]);
 
 	// Calcular el precio actual basado en la cantidad
 	const basePrice = selectedVariant?.price || product?.variants[0]?.price || 0;
@@ -215,13 +226,29 @@ export const CellPhonePage = () => {
 					</div>
 
 					<div className='flex gap-5 items-center'>
-						<div className='flex flex-col'>
-							<span className='tracking-wide text-lg font-semibold'>
-								{formatPrice(currentPrice)}
-							</span>
-							{isWholesale && (
-								<span className='text-xs font-semibold text-primary/80 mt-1 bg-primary/10 px-2 py-0.5 rounded w-fit'>
-									Precio por mayor aplicado
+						<div className='flex flex-col gap-2'>
+							{wholesaleDiscountAmount > 0 ? (
+								<div className="flex flex-col gap-1.5 mt-2">
+									<div className="flex items-center gap-3">
+										<span className={`tracking-wide font-bold ${!isWholesale ? 'text-3xl text-slate-800' : 'text-xl text-slate-400 line-through'}`}>
+											{formatPrice(basePrice)}
+										</span>
+										<span className="text-[10px] uppercase font-bold tracking-wider bg-slate-100 text-slate-500 px-2 py-1 rounded-md">
+											X menor
+										</span>
+									</div>
+									<div className="flex items-center gap-3">
+										<span className={`tracking-wide font-bold ${isWholesale ? 'text-3xl text-black' : 'text-xl text-slate-700'}`}>
+											{formatPrice(wholesaleDiscountAmount)}
+										</span>
+										<span className="text-[10px] uppercase font-bold tracking-wider bg-black text-white px-2 py-1 rounded-md">
+											X mayor
+										</span>
+									</div>
+								</div>
+							) : (
+								<span className='tracking-wide text-3xl font-bold'>
+									{formatPrice(currentPrice)}
 								</span>
 							)}
 						</div>
@@ -269,16 +296,15 @@ export const CellPhonePage = () => {
 						</div>
 					</div>
 
-					{/* OPCIONES DE ALMACENAMIENTO */}
+					{/* OPCIONES / STOCK DISPONIBLE */}
 					<div className='flex flex-col gap-3'>
-						<p className='text-xs font-medium'>
-							Almacenamiento disponible
-						</p>
-
-						{selectedColor && (
-							<div className='flex gap-3'>
+						{selectedColor && colors[selectedColor].storages.length > 1 && (
+							<>
+								<p className='text-xs font-medium'>
+									Variante
+								</p>
 								<select
-									className='border border-gray-300 rounded-lg px-3 py-1'
+									className='border border-gray-300 rounded-lg px-3 py-1 bg-white w-fit'
 									value={selectedStorage || ''}
 									onChange={e => setSelectedStorage(e.target.value)}
 								>
@@ -288,7 +314,13 @@ export const CellPhonePage = () => {
 										</option>
 									))}
 								</select>
-							</div>
+							</>
+						)}
+
+						{selectedVariant && !isOutOfStock && (
+							<p className='text-xs font-medium text-slate-600'>
+								Stock disponible: <span className='font-bold text-black'>{stock} unidades</span>
+							</p>
 						)}
 					</div>
 
@@ -313,7 +345,7 @@ export const CellPhonePage = () => {
 									<span className='text-slate-500 text-sm'>
 										{count}
 									</span>
-									<button onClick={increment}>
+									<button onClick={increment} disabled={count >= stock}>
 										<LuPlus size={15} />
 									</button>
 								</div>

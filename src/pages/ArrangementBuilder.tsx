@@ -36,7 +36,7 @@ import type { ComponentCategory } from '../interfaces/arrangement.interface';
  * Validates: Requirements 2.1, 6.1, 11.2, 13.1, 13.2, 13.3, 13.4, 13.5
  */
 export const ArrangementBuilder = () => {
-  // Estado para la categoría activa en mobile (pestañas)
+  // Estado para la categoría activa en stepper
   const [activeCategory, setActiveCategory] = useState<ComponentCategory>('BASE');
 
   // Cargar componentes de todas las categorías
@@ -61,10 +61,25 @@ export const ArrangementBuilder = () => {
   const selectedBalloonIds = selectedComponents.balloons.map((b) => b.id);
   const selectedExtraIds = selectedComponents.extras.map((e) => e.id);
 
-  // Scroll al inicio al montar el componente
+  // Scroll al inicio al montar el componente o cambiar de paso
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [activeCategory]);
+
+  const steps: ComponentCategory[] = ['BASE', 'FLORES', 'GLOBOS', 'EXTRAS'];
+  const currentStepIndex = steps.indexOf(activeCategory);
+
+  const handleNext = () => {
+    if (currentStepIndex < steps.length - 1) {
+      setActiveCategory(steps[currentStepIndex + 1]);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStepIndex > 0) {
+      setActiveCategory(steps[currentStepIndex - 1]);
+    }
+  };
 
   // Manejo de errores de carga
   if (error) {
@@ -112,173 +127,163 @@ export const ArrangementBuilder = () => {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {/* Layout Desktop: Grid de 2 columnas */}
-        <div className="grid gap-8 lg:grid-cols-2">
-          {/* Columna izquierda: Preview y Precio */}
-          <div className="space-y-6">
-            {/* Preview Canvas */}
-            <div className="rounded-xl bg-white p-6 shadow-lg">
-              <h2 className="mb-4 text-xl font-bold text-slate-800">Vista Previa</h2>
-              <PreviewCanvas />
-            </div>
+        {/* Progress Stepper */}
+        <div className="mb-8 overflow-x-auto">
+          <div className="flex min-w-max items-center justify-between gap-4 px-2">
+            {steps.map((step, index) => {
+              const isPast = steps.indexOf(activeCategory) > index;
+              const isActive = activeCategory === step;
+              return (
+                <div key={step} className="flex flex-1 items-center">
+                  <button
+                    onClick={() => setActiveCategory(step)}
+                    className="flex flex-col items-center gap-2 group"
+                  >
+                    <div
+                      className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold transition-all ${
+                        isActive
+                          ? 'bg-primary text-white ring-4 ring-primary/20 scale-110'
+                          : isPast
+                          ? 'bg-primary text-white'
+                          : 'bg-slate-200 text-slate-500 group-hover:bg-slate-300'
+                      }`}
+                    >
+                      {isPast ? <span className="material-icons-outlined text-sm">check</span> : index + 1}
+                    </div>
+                    <span
+                      className={`text-xs font-semibold uppercase tracking-wider transition-colors ${
+                        isActive || isPast ? 'text-primary' : 'text-slate-400 group-hover:text-slate-600'
+                      }`}
+                    >
+                      {step}
+                    </span>
+                  </button>
+                  {index < steps.length - 1 && (
+                    <div
+                      className={`mx-4 h-1 flex-1 rounded-full transition-colors ${
+                        isPast ? 'bg-primary' : 'bg-slate-200'
+                      }`}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
 
-            {/* Price Calculator */}
+        {/* Layout Desktop: Grid de 2 columnas con sticky */}
+        <div className="grid gap-8 lg:grid-cols-12 lg:items-start">
+          
+          {/* Columna Izquierda: Selectores de componentes (7 columnas en Desktop) */}
+          <div className="space-y-6 lg:col-span-7 xl:col-span-8">
             <div className="rounded-xl bg-white p-6 shadow-lg">
-              <PriceCalculator />
-            </div>
+              {/* Header interactivo basado en la categoría */}
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-slate-800">
+                  {activeCategory === 'BASE' && (
+                    <>
+                      Elige tu Base <span className="ml-2 text-sm font-normal text-red-500">*Requerido</span>
+                    </>
+                  )}
+                  {activeCategory === 'FLORES' && 'Añade hermosas flores'}
+                  {activeCategory === 'GLOBOS' && 'Añade globos festivos'}
+                  {activeCategory === 'EXTRAS' && 'Toques finales (Extras)'}
+                </h2>
+                <p className="mt-1 text-sm text-slate-500">
+                  {activeCategory === 'BASE' && 'El cimiento de tu arreglo floral.'}
+                  {activeCategory === 'FLORES' && 'Puedes seleccionar los tipos y cantidad que gustes.'}
+                  {activeCategory === 'GLOBOS' && 'Personaliza con mensajes especiales.'}
+                  {activeCategory === 'EXTRAS' && 'Chocolates, peluches y más.'}
+                </p>
+              </div>
 
-            {/* Configuration Actions */}
-            <div className="rounded-xl bg-white p-6 shadow-lg">
-              <ConfigurationActions />
+              {/* Renderizar categoría activa */}
+              <div className="min-h-[400px]">
+                {activeCategory === 'BASE' && (
+                  <ComponentSelector
+                    category="BASE"
+                    components={baseComponents}
+                    selectedIds={selectedBaseIds}
+                    onToggle={selectBase}
+                  />
+                )}
+                {activeCategory === 'FLORES' && (
+                  <ComponentSelector
+                    category="FLORES"
+                    components={flowerComponents}
+                    selectedIds={selectedFlowerIds}
+                    onToggle={toggleFlower}
+                  />
+                )}
+                {activeCategory === 'GLOBOS' && (
+                  <ComponentSelector
+                    category="GLOBOS"
+                    components={balloonComponents}
+                    selectedIds={selectedBalloonIds}
+                    onToggle={toggleBalloon}
+                  />
+                )}
+                {activeCategory === 'EXTRAS' && (
+                  <ComponentSelector
+                    category="EXTRAS"
+                    components={extraComponents}
+                    selectedIds={selectedExtraIds}
+                    onToggle={toggleExtra}
+                  />
+                )}
+              </div>
+
+              {/* Controles de Navegación del Wizard */}
+              <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  disabled={currentStepIndex === 0}
+                  className={`flex items-center gap-2 rounded-lg px-6 py-2.5 font-semibold transition-colors ${
+                    currentStepIndex === 0
+                      ? 'cursor-not-allowed text-slate-400'
+                      : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                  }`}
+                >
+                  <span className="material-icons-outlined text-sm">arrow_back</span>
+                  Anterior
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  disabled={currentStepIndex === steps.length - 1}
+                  className={`flex items-center gap-2 rounded-lg px-8 py-2.5 font-bold transition-all ${
+                    currentStepIndex === steps.length - 1
+                      ? 'opacity-0 pointer-events-none'
+                      : 'bg-primary text-white shadow-lg shadow-primary/30 hover:bg-primary/90 hover:shadow-xl hover:-translate-y-0.5'
+                  }`}
+                >
+                  Siguiente
+                  <span className="material-icons-outlined text-sm">arrow_forward</span>
+                </button>
+              </div>
             </div>
           </div>
 
-          {/* Columna derecha: Selectores de componentes */}
-          <div className="space-y-6">
-            {/* Mobile: Pestañas para categorías */}
-            <div className="lg:hidden">
-              <div className="mb-4 flex gap-2 overflow-x-auto rounded-lg bg-white p-2 shadow-lg">
-                <button
-                  onClick={() => setActiveCategory('BASE')}
-                  className={`flex-1 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-                    activeCategory === 'BASE'
-                      ? 'bg-primary text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  Base
-                </button>
-                <button
-                  onClick={() => setActiveCategory('FLORES')}
-                  className={`flex-1 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-                    activeCategory === 'FLORES'
-                      ? 'bg-primary text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  Flores
-                </button>
-                <button
-                  onClick={() => setActiveCategory('GLOBOS')}
-                  className={`flex-1 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-                    activeCategory === 'GLOBOS'
-                      ? 'bg-primary text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  Globos
-                </button>
-                <button
-                  onClick={() => setActiveCategory('EXTRAS')}
-                  className={`flex-1 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
-                    activeCategory === 'EXTRAS'
-                      ? 'bg-primary text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  Extras
-                </button>
+          {/* Columna Derecha: Preview y Precio pegajoso (5/4 columnas en Desktop) */}
+          <div className="space-y-6 lg:sticky lg:top-24 lg:col-span-5 xl:col-span-4">
+            {/* Preview Canvas */}
+            <div className="rounded-xl bg-white p-6 shadow-lg ring-1 ring-slate-100">
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-slate-800">Tu Arreglo</h2>
+                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+                  Vista Previa
+                </span>
               </div>
-
-              {/* Contenido de la categoría activa en mobile */}
-              <div className="rounded-xl bg-white p-6 shadow-lg">
-                {activeCategory === 'BASE' && (
-                  <>
-                    <h2 className="mb-4 text-xl font-bold text-slate-800">
-                      Selecciona una Base
-                      <span className="ml-2 text-sm font-normal text-red-500">*Requerido</span>
-                    </h2>
-                    <ComponentSelector
-                      category="BASE"
-                      components={baseComponents}
-                      selectedIds={selectedBaseIds}
-                      onToggle={selectBase}
-                    />
-                  </>
-                )}
-                {activeCategory === 'FLORES' && (
-                  <>
-                    <h2 className="mb-4 text-xl font-bold text-slate-800">Selecciona Flores</h2>
-                    <ComponentSelector
-                      category="FLORES"
-                      components={flowerComponents}
-                      selectedIds={selectedFlowerIds}
-                      onToggle={toggleFlower}
-                    />
-                  </>
-                )}
-                {activeCategory === 'GLOBOS' && (
-                  <>
-                    <h2 className="mb-4 text-xl font-bold text-slate-800">Selecciona Globos</h2>
-                    <ComponentSelector
-                      category="GLOBOS"
-                      components={balloonComponents}
-                      selectedIds={selectedBalloonIds}
-                      onToggle={toggleBalloon}
-                    />
-                  </>
-                )}
-                {activeCategory === 'EXTRAS' && (
-                  <>
-                    <h2 className="mb-4 text-xl font-bold text-slate-800">Selecciona Extras</h2>
-                    <ComponentSelector
-                      category="EXTRAS"
-                      components={extraComponents}
-                      selectedIds={selectedExtraIds}
-                      onToggle={toggleExtra}
-                    />
-                  </>
-                )}
-              </div>
+              <PreviewCanvas />
             </div>
 
-            {/* Desktop: Todas las categorías visibles */}
-            <div className="hidden space-y-6 lg:block">
-              {/* Base */}
-              <div className="rounded-xl bg-white p-6 shadow-lg">
-                <h2 className="mb-4 text-xl font-bold text-slate-800">
-                  Selecciona una Base
-                  <span className="ml-2 text-sm font-normal text-red-500">*Requerido</span>
-                </h2>
-                <ComponentSelector
-                  category="BASE"
-                  components={baseComponents}
-                  selectedIds={selectedBaseIds}
-                  onToggle={selectBase}
-                />
-              </div>
-
-              {/* Flores */}
-              <div className="rounded-xl bg-white p-6 shadow-lg">
-                <h2 className="mb-4 text-xl font-bold text-slate-800">Selecciona Flores</h2>
-                <ComponentSelector
-                  category="FLORES"
-                  components={flowerComponents}
-                  selectedIds={selectedFlowerIds}
-                  onToggle={toggleFlower}
-                />
-              </div>
-
-              {/* Globos */}
-              <div className="rounded-xl bg-white p-6 shadow-lg">
-                <h2 className="mb-4 text-xl font-bold text-slate-800">Selecciona Globos</h2>
-                <ComponentSelector
-                  category="GLOBOS"
-                  components={balloonComponents}
-                  selectedIds={selectedBalloonIds}
-                  onToggle={toggleBalloon}
-                />
-              </div>
-
-              {/* Extras */}
-              <div className="rounded-xl bg-white p-6 shadow-lg">
-                <h2 className="mb-4 text-xl font-bold text-slate-800">Selecciona Extras</h2>
-                <ComponentSelector
-                  category="EXTRAS"
-                  components={extraComponents}
-                  selectedIds={selectedExtraIds}
-                  onToggle={toggleExtra}
-                />
+            {/* Price Calculator & Actions */}
+            <div className="rounded-xl bg-primary/5 p-6 shadow-lg ring-1 ring-primary/20">
+              <PriceCalculator />
+              <div className="mt-6 border-t border-primary/10 pt-6">
+                <ConfigurationActions />
               </div>
             </div>
           </div>

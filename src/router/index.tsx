@@ -17,12 +17,18 @@ import {
 	DashboardProductsPage,
 	DashboardNewProductPage,
 	DashboardProductSlugPage,
+	DashboardOccasionsPage,
+	DashboardNewOccasionPage,
 	DashboardOrdersPage,
 	DashboardOrderPage,
 	ArrangementBuilder,
 	PaymentResultPage,
 	OrderDetailPage,
 	OrdersListPage,
+	SeguimientoPedido,
+	Envios,
+	Devoluciones,
+	Contacto,
 } from '../pages';
 import { ClientLayout } from '../layouts/ClientLayout';
 import { DashboardLayout } from '../layouts/DashboardLayout';
@@ -51,6 +57,22 @@ export const router = createBrowserRouter([
 			{
 				path: 'arma-tu-arreglo',
 				element: <ArrangementBuilder />,
+			},
+			{
+				path: 'seguimiento',
+				element: <SeguimientoPedido />,
+			},
+			{
+				path: 'envios',
+				element: <Envios />,
+			},
+			{
+				path: 'devoluciones',
+				element: <Devoluciones />,
+			},
+			{
+				path: 'contacto',
+				element: <Contacto />,
 			},
 			{
 				path: 'login',
@@ -143,6 +165,18 @@ export const router = createBrowserRouter([
 			{
 				path: 'productos/editar/:slug',
 				element: <DashboardProductSlugPage />,
+			},
+			{
+				path: 'ocasiones',
+				element: <DashboardOccasionsPage />,
+			},
+			{
+				path: 'ocasiones/new',
+				element: <DashboardNewOccasionPage />,
+			},
+			{
+				path: 'ocasiones/editar/:id',
+				element: <DashboardNewOccasionPage />,
 			},
 			{
 				path: 'ordenes',

@@ -4,13 +4,21 @@ import { getFilteredProducts } from '../../actions';
 export const useFilteredProducts = ({
 	page,
 	categories,
+	maxPrice,
+	colors,
+	occasions,
+	sortBy,
 }: {
 	page: number;
 	categories: string[];
+	maxPrice?: number;
+	colors?: string[];
+	occasions?: string[];
+	sortBy?: string;
 }) => {
 	const { data, isLoading } = useQuery({
-		queryKey: ['filteredProducts', page, categories],
-		queryFn: () => getFilteredProducts({ page, categories }),
+		queryKey: ['filteredProducts', page, categories, maxPrice, colors, occasions, sortBy],
+		queryFn: () => getFilteredProducts({ page, categories, maxPrice, colors, occasions, sortBy }),
 		retry: false,
 	});
 

@@ -28,9 +28,17 @@ export const getProducts = async (page: number) => {
 export const getFilteredProducts = async ({
 	page = 1,
 	categories = [],
+	maxPrice,
+	colors = [],
+	occasions = [],
+	sortBy = 'Novedades',
 }: {
 	page: number;
 	categories: string[];
+	maxPrice?: number;
+	colors?: string[];
+	occasions?: string[];
+	sortBy?: string;
 }) => {
 	const itemsPerPage = 10;
 	const from = (page - 1) * itemsPerPage;
@@ -38,12 +46,41 @@ export const getFilteredProducts = async ({
 
 	let query = supabase
 		.from('products')
-		.select('*, variants(*)', { count: 'exact' })
-		.order('created_at', { ascending: false })
+		.select(
+			`*, variants${
+				maxPrice !== undefined || colors.length > 0 ? '!inner' : ''
+			}(*), product_occasions${
+				occasions.length > 0 ? '!inner' : ''
+			}(*)`,
+			{ count: 'exact' }
+		)
 		.range(from, to);
+
+	// Add Order rules manually depending on sortBy arg
+	if (sortBy === 'Novedades' || sortBy === 'Más populares') {
+		query = query.order('created_at', { ascending: false });
+	} else if (sortBy === 'Precio: menor a mayor') {
+		query = query.order('price', { ascending: true });
+	} else if (sortBy === 'Precio: mayor a menor') {
+		query = query.order('price', { ascending: false });
+	} else {
+		query = query.order('created_at', { ascending: false }); // Fallback
+	}
 
 	if (categories.length > 0) {
 		query = query.in('category', categories);
+	}
+
+	if (maxPrice !== undefined) {
+		query = query.lte('variants.price', maxPrice);
+	}
+
+	if (colors.length > 0) {
+		query = query.in('variants.color', colors);
+	}
+
+	if (occasions.length > 0) {
+		query = query.in('product_occasions.occasion_id', occasions);
 	}
 
 	const { data, error, count } = await query;
@@ -123,6 +160,37 @@ export const searchProducts = async (searchTerm: string) => {
 	}
 
 	return data;
+};
+
+export const getMinMaxPrices = async () => {
+	// Obtener el precio mínimo
+	const { data: minData, error: minError } = await supabase
+		.from('variants')
+		.select('price')
+		.order('price', { ascending: true })
+		.limit(1)
+		.maybeSingle();
+
+	// Obtener el precio máximo
+	const { data: maxData, error: maxError } = await supabase
+		.from('variants')
+		.select('price')
+		.order('price', { ascending: false })
+		.limit(1)
+		.maybeSingle();
+
+	if (minError || maxError) {
+		console.log(minError?.message || maxError?.message);
+		throw new Error(minError?.message || maxError?.message || 'Error fetching min max prices');
+	}
+
+	const minPrice = minData?.price || 0;
+	const maxPrice = maxData?.price || 10000;
+
+	return {
+		minPrice: Math.floor(minPrice / 100) * 100,
+		maxPrice: Math.ceil(maxPrice / 100) * 100,
+	};
 };
 
 /* ********************************** */

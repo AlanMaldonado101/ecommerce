@@ -56,26 +56,21 @@ export const ComponentSelector = ({
             key={component.id}
             type="button"
             onClick={() => onToggle(component)}
-            className={`group relative overflow-hidden rounded-xl border-2 bg-white p-3 text-left shadow-sm transition-all duration-300 hover:shadow-lg ${
+            className={`group relative flex h-full flex-col overflow-hidden rounded-2xl border-2 bg-white text-left transition-all duration-300 ${
               isSelected
-                ? 'border-primary shadow-primary/20'
-                : 'border-slate-200 hover:border-primary/50'
+                ? 'border-primary shadow-lg shadow-primary/20 ring-1 ring-primary/50'
+                : 'border-transparent shadow-sm hover:-translate-y-1 hover:border-primary/30 hover:shadow-md'
             }`}
           >
-            {/* Indicador de selección */}
-            {isSelected && (
-              <div className="absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white shadow-lg">
-                <span className="material-icons-outlined text-sm">check</span>
-              </div>
-            )}
-
             {/* Imagen del componente */}
-            <div className="relative mb-2 aspect-square overflow-hidden rounded-lg bg-slate-100">
+            <div className="relative aspect-square w-full overflow-hidden bg-slate-50">
               {component.image ? (
                 <img
                   src={component.image}
                   alt={component.name}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  className={`h-full w-full object-cover transition-transform duration-500 ${
+                    isSelected ? 'scale-105' : 'group-hover:scale-110'
+                  }`}
                   onError={(e) => {
                     e.currentTarget.src = '/logo-jireh.png';
                     e.currentTarget.className =
@@ -89,21 +84,44 @@ export const ComponentSelector = ({
                   </span>
                 </div>
               )}
+              
+              {/* Overlay oscuro sutil al hover si no está seleccionado */}
+              {!isSelected && (
+                <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/5" />
+              )}
             </div>
 
-            {/* Nombre del componente */}
-            <h3
-              className={`mb-1 text-sm font-semibold transition-colors ${
-                isSelected ? 'text-primary' : 'text-slate-800 group-hover:text-primary'
-              }`}
-            >
-              {component.name}
-            </h3>
-
-            {/* Precio */}
-            <p className="text-xs font-bold text-slate-600">
-              {formatPrice(component.price)}
-            </p>
+            {/* Información del componente */}
+            <div className="flex flex-1 flex-col justify-between p-4">
+              <div>
+                <h3
+                  className={`line-clamp-2 text-sm font-bold leading-tight transition-colors ${
+                    isSelected ? 'text-primary' : 'text-slate-800'
+                  }`}
+                >
+                  {component.name}
+                </h3>
+              </div>
+              
+              <div className="mt-3 flex items-center justify-between">
+                <p className="text-sm font-black text-slate-600">
+                  {formatPrice(component.price)}
+                </p>
+                
+                {/* Botón Acción (Icono) */}
+                <div
+                  className={`flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${
+                    isSelected
+                      ? 'bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-600'
+                      : 'bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white'
+                  }`}
+                >
+                  <span className="material-icons-outlined text-[18px]">
+                    {isSelected ? 'remove' : 'add'}
+                  </span>
+                </div>
+              </div>
+            </div>
           </button>
         );
       })}

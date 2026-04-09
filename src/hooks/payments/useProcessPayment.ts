@@ -1,12 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { supabase } from '../../supabase/client';
-import toast from 'react-hot-toast';
 
-interface ProcessPaymentInput {
-  token: string;
-  paymentMethodId: string;
-  issuerId: string;
-  installments: number;
+interface ProcessPaymentRequest {
   items: Array<{
     variantId: string;
     quantity: number;
@@ -15,14 +10,11 @@ interface ProcessPaymentInput {
     image: string;
   }>;
   totalAmount: number;
+  paymentMethod: 'webpay' | 'checkout_pro';
   buyerData: {
     name: string;
     email: string;
     phone: string;
-    identification: {
-      type: string;
-      number: string;
-    };
     address: {
       street: string;
       number: string;
@@ -35,39 +27,50 @@ interface ProcessPaymentInput {
 
 interface ProcessPaymentResponse {
   orderId: string;
-  paymentId: string;
-  status: string;
-  statusDetail: string;
-}
-
-async function processPayment(input: ProcessPaymentInput): Promise<ProcessPaymentResponse> {
-  const { data, error } = await supabase.functions.invoke('process-payment', {
-    body: input,
-  });
-
-  if (error) {
-    let message = 'Error al procesar el pago';
-    if (error.message) {
-      try {
-        const parsed = JSON.parse(error.message);
-        message = parsed.message || parsed.error || message;
-      } catch {
-        message = error.message;
-      }
-    }
-    throw new Error(message);
-  }
-
-  return data as ProcessPaymentResponse;
+  preferenceId?: string;
+  initPoint?: string;
+  webpayToken?: string;
+  webpayUrl?: string;
 }
 
 export const useProcessPayment = () => {
   return useMutation({
-    mutationFn: processPayment,
-    onError: (error: Error) => {
-      toast.error(error.message, {
-        position: 'bottom-right',
-      });
+    mutationFn: async (data: ProcessPaymentRequest) => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        throw new Error('No authenticated session');
+      }
+
+      const { data: responseData, error } = await supabase.functions.invoke(
+        'create-payment',
+        {
+          body: data,
+        }
+      );
+
+      if (error) {
+        // Log the full error context, which contains the raw JSON from the server on 400s
+        console.error('Supabase function error:', error);
+        if (error.context) {
+          console.error('Error context:', JSON.stringify(error.context, null, 2));
+        } else if (error instanceof Error && (error as any).body) {
+           console.error('Error body:', await (error as any).body);
+        }
+        
+        // Return the inner message if it exists, otherwise the top level message
+        const messageToThrow = error.context?.message || error.message || 'Error procesando el pago';
+        throw new Error(messageToThrow);
+      }
+
+      if (responseData?.error) {
+        console.error('MercadoPago Verbose Error:', JSON.stringify(responseData, null, 2));
+        throw new Error(responseData.message || 'Error procesando el pago');
+      }
+
+      return responseData as ProcessPaymentResponse;
     },
   });
 };

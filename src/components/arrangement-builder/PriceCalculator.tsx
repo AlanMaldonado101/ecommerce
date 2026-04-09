@@ -10,25 +10,9 @@
  */
 
 import { useArrangementStore } from '../../store/arrangement.store';
-import './PriceCalculator.css';
+import { formatPrice } from '../../helpers';
 
-/**
- * Formatea un número como precio en pesos colombianos
- * 
- * @param price - Precio a formatear
- * @returns Precio formateado con símbolo de moneda y separadores
- * 
- * Validates: Requirements 7.4
- * Property 12: Formato de moneda
- */
-const formatPrice = (price: number): string => {
-  return new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(price);
-};
+
 
 /**
  * Componente que muestra el precio total del arreglo personalizado
@@ -47,20 +31,69 @@ export const PriceCalculator = () => {
   const totalPrice = getTotalPrice();
   const hasBase = isValid();
 
+  const { base, flowers, balloons, extras } = useArrangementStore((state) => state.selectedComponents);
+
   return (
-    <div className="price-calculator">
-      <div className="price-calculator__container">
-        <div className="price-calculator__label">
-          Precio Total
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-3">
+        <span className="material-icons-outlined text-primary">receipt_long</span>
+        <h3 className="font-bold text-slate-800">Resumen de tu Arreglo</h3>
+      </div>
+
+      <div className="flex flex-col gap-3 text-sm">
+        {/* Base */}
+        <div className="flex items-start justify-between">
+          <span className="text-slate-500">
+            {base ? `1x ${base.name}` : <span className="text-red-400 italic">Base pendiente...</span>}
+          </span>
+          <span className="font-medium text-slate-700">
+            {base ? formatPrice(base.price) : formatPrice(0)}
+          </span>
         </div>
-        <div className="price-calculator__amount">
-          {formatPrice(totalPrice)}
-        </div>
-        {!hasBase && totalPrice === 0 && (
-          <div className="price-calculator__message">
-            Selecciona una base para ver el precio
+
+        {/* Flores */}
+        {flowers.length > 0 && (
+          <div className="flex items-start justify-between">
+            <span className="text-slate-500">{flowers.length}x Flores variadas</span>
+            <span className="font-medium text-slate-700">
+              {formatPrice(flowers.reduce((acc, f) => acc + f.price, 0))}
+            </span>
           </div>
         )}
+
+        {/* Globos */}
+        {balloons.length > 0 && (
+          <div className="flex items-start justify-between">
+            <span className="text-slate-500">{balloons.length}x Festivos y Globos</span>
+            <span className="font-medium text-slate-700">
+              {formatPrice(balloons.reduce((acc, b) => acc + b.price, 0))}
+            </span>
+          </div>
+        )}
+
+        {/* Extras */}
+        {extras.length > 0 && (
+          <div className="flex items-start justify-between">
+            <span className="text-slate-500">{extras.length}x Extras adicionales</span>
+            <span className="font-medium text-slate-700">
+              {formatPrice(extras.reduce((acc, e) => acc + e.price, 0))}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-2 rounded-lg bg-slate-50 p-4 ring-1 ring-slate-100">
+        <div className="flex items-end justify-between">
+          <div className="flex flex-col">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Total</span>
+            <span className="text-2xl font-black text-primary">{formatPrice(totalPrice)}</span>
+          </div>
+          {!hasBase && (
+            <span className="text-xs font-medium text-red-500 animate-pulse">
+              Falta seleccionar base
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

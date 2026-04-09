@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { navbarLinks, type NavbarLinkItem } from '../../constants/links';
 import {
 	HiOutlineSearch,
@@ -13,6 +13,7 @@ import { useGlobalStore } from '../../store/global.store';
 import { useCartStore } from '../../store/cart.store';
 import { useCustomer, useUser } from '../../hooks';
 import { LuLoader2 } from 'react-icons/lu';
+import { supabase } from '../../supabase/client';
 
 function isDropdownLink(
 	link: NavbarLinkItem
@@ -23,6 +24,7 @@ function isDropdownLink(
 export const Navbar = () => {
 	const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 	const navRef = useRef<HTMLDivElement>(null);
+	const location = useLocation();
 
 	const openSheet = useGlobalStore(state => state.openSheet);
 	const totalItemsInCart = useCartStore(state => state.totalItemsInCart);
@@ -32,6 +34,41 @@ export const Navbar = () => {
 	const { session, isLoading } = useUser();
 	const userId = session?.user.id;
 	const { data: customer } = useCustomer(userId);
+
+	// Fetch dynamic occasions
+	const [dynamicLinks, setDynamicLinks] = useState<NavbarLinkItem[]>(navbarLinks);
+
+	useEffect(() => {
+		const fetchOccasions = async () => {
+			try {
+				const { data, error } = await supabase
+					.from('occasions')
+					.select('*')
+					.order('created_at', { ascending: true });
+
+				if (error) throw error;
+
+				if (data && data.length > 0) {
+					// Build new children array
+					const occasionChildren = data.map((occ: any) => ({
+						title: occ.name,
+						href: `/productos?ocasion=${occ.slug}`
+					}));
+
+					setDynamicLinks(prev => prev.map(link => {
+						if (link.title === 'Temporadas') {
+							return { ...link, children: occasionChildren };
+						}
+						return link;
+					}));
+				}
+			} catch (error) {
+				console.error("Error fetching occasions for navbar:", error);
+			}
+		};
+
+		fetchOccasions();
+	}, []);
 
 	useEffect(() => {
 		function handleClickOutside(e: MouseEvent) {
@@ -57,7 +94,7 @@ export const Navbar = () => {
 						ref={navRef}
 						className="hidden md:flex items-center gap-1 flex-1 justify-center"
 					>
-						{navbarLinks.map(link => {
+						{dynamicLinks.map(link => {
 							if (isDropdownLink(link)) {
 								const isOpen = openDropdownId === link.id;
 								return (
@@ -126,20 +163,21 @@ export const Navbar = () => {
 									</Link>
 								);
 							}
+							const currentPath = location.pathname + location.search;
+							const isActive = currentPath === link.href || (location.pathname === link.href && !link.href.includes('?'));
+
 							return (
-								<NavLink
+								<Link
 									key={link.id}
 									to={link.href}
-									className={({ isActive }) =>
-										`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-											isActive
-												? 'text-primary bg-primary/10'
-												: 'text-slate-700 hover:bg-primary/10 hover:text-primary'
-										}`
-									}
+									className={`rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+										isActive
+											? 'text-primary bg-primary/10'
+											: 'text-slate-700 hover:bg-primary/10 hover:text-primary'
+									}`}
 								>
 									{link.title}
-								</NavLink>
+								</Link>
 							);
 						})}
 					</nav>

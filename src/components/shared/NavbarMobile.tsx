@@ -5,6 +5,8 @@ import { useGlobalStore } from '../../store/global.store';
 import { Link, NavLink } from 'react-router-dom';
 import { navbarLinks, type NavbarLinkItem } from '../../constants/links';
 import { Logo } from './Logo';
+import { useEffect } from 'react';
+import { supabase } from '../../supabase/client';
 
 function isDropdownLink(
 	link: NavbarLinkItem
@@ -17,6 +19,41 @@ export const NavbarMobile = () => {
 	const setActiveNavMobile = useGlobalStore(
 		state => state.setActiveNavMobile
 	);
+
+	// Fetch dynamic occasions
+	const [dynamicLinks, setDynamicLinks] = useState<NavbarLinkItem[]>(navbarLinks);
+
+	useEffect(() => {
+		const fetchOccasions = async () => {
+			try {
+				const { data, error } = await supabase
+					.from('occasions')
+					.select('*')
+					.order('created_at', { ascending: true });
+
+				if (error) throw error;
+
+				if (data && data.length > 0) {
+					// Build new children array
+					const occasionChildren = data.map((occ: any) => ({
+						title: occ.name,
+						href: `/productos?ocasion=${occ.slug}`
+					}));
+
+					setDynamicLinks(prev => prev.map(link => {
+						if (link.title === 'Temporadas') {
+							return { ...link, children: occasionChildren };
+						}
+						return link;
+					}));
+				}
+			} catch (error) {
+				console.error("Error fetching occasions for mobile navbar:", error);
+			}
+		};
+
+		fetchOccasions();
+	}, []);
 
 	return (
 		<div className="fixed inset-0 z-50 flex h-screen w-screen justify-center bg-background-light py-20 px-4 shadow-lg animate-slide-in-left text-slate-800 overflow-y-auto overflow-x-hidden">
@@ -34,7 +71,7 @@ export const NavbarMobile = () => {
 				</div>
 
 				<nav className="flex flex-col items-center gap-2">
-					{navbarLinks.map(item => {
+					{dynamicLinks.map(item => {
 						if (isDropdownLink(item)) {
 							const isOpen = openDropdownId === item.id;
 							return (

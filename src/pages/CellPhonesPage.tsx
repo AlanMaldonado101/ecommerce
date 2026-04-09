@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { CardProduct } from '../components/products/CardProduct';
 import { ContainerFilter } from '../components/products/ContainerFilter';
 import { prepareProducts } from '../helpers';
-import { useFilteredProducts } from '../hooks';
+import { useAttributes, useFilteredProducts, usePriceRange } from '../hooks';
 import { Pagination } from '../components/shared/Pagination';
 
 const ITEMS_PER_PAGE = 10;
@@ -11,8 +11,22 @@ const ITEMS_PER_PAGE = 10;
 export const CellPhonesPage = () => {
 	const [page, setPage] = useState(1);
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+	const [selectedColors, setSelectedColors] = useState<string[]>([]);
+	const [selectedOccasions, setSelectedOccasions] = useState<string[]>([]);
 	const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+	const [sortBy, setSortBy] = useState('Novedades');
 	const [searchParams] = useSearchParams();
+
+	const { minPrice: absoluteMinPrice, maxPrice: absoluteMaxPrice, isLoading: isPriceRangeLoading } = usePriceRange();
+
+	const [maxPrice, setMaxPrice] = useState<number | undefined>(undefined);
+
+	// Inicializar el slider cuando maxPrice llega desde la bd
+	useEffect(() => {
+		if (maxPrice === undefined && absoluteMaxPrice !== 10000 && !isPriceRangeLoading) {
+			setMaxPrice(absoluteMaxPrice);
+		}
+	}, [absoluteMaxPrice, maxPrice, isPriceRangeLoading]);
 
 	const categoriesFromUrl = useMemo(() => {
 		const raw = [
@@ -30,6 +44,20 @@ export const CellPhonesPage = () => {
 		return Array.from(new Set(raw));
 	}, [searchParams]);
 
+	const { occasions } = useAttributes();
+
+	const occasionsFromUrl = useMemo(() => {
+		const raw = searchParams
+			.getAll('ocasion')
+			.flatMap(v => v.split(','))
+			.map(v => v.trim())
+			.filter(Boolean);
+			
+		return raw
+			.map(slug => occasions.find((o: any) => o.slug === slug)?.id)
+			.filter(Boolean) as string[];
+	}, [searchParams, occasions]);
+
 	useEffect(() => {
 		// cuando cambia el query param, sincronizar filtros
 		const a = selectedCategories.join(',');
@@ -38,8 +66,18 @@ export const CellPhonesPage = () => {
 			setSelectedCategories(categoriesFromUrl);
 			setPage(1);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [categoriesFromUrl]);
+
+	useEffect(() => {
+		const a = selectedOccasions.join(',');
+		const b = occasionsFromUrl.join(',');
+		// Solo sincronizar si cargó occasions o si no hay query param
+		if (a !== b && (occasionsFromUrl.length > 0 || !searchParams.has('ocasion') || occasions.length > 0)) {
+			setSelectedOccasions(occasionsFromUrl);
+			setPage(1);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [occasionsFromUrl, occasions.length, searchParams]);
 
 	const {
 		data: products = [],
@@ -48,15 +86,30 @@ export const CellPhonesPage = () => {
 	} = useFilteredProducts({
 		page,
 		categories: selectedCategories,
+		colors: selectedColors,
+		occasions: selectedOccasions,
+		maxPrice: (maxPrice ?? 10000) >= absoluteMaxPrice ? undefined : maxPrice,
+		sortBy,
 	});
 
-	const preparedProducts = prepareProducts(products);
+	const preparedProducts = prepareProducts(products as any);
 
 	return (
 		<div className="flex flex-col gap-8 lg:flex-row">
 				<ContainerFilter
 					setSelectedCategories={setSelectedCategories}
 					selectedCategories={selectedCategories}
+					selectedColors={selectedColors}
+					setSelectedColors={setSelectedColors}
+					selectedOccasions={selectedOccasions}
+					setSelectedOccasions={setSelectedOccasions}
+					absoluteMinPrice={absoluteMinPrice}
+					absoluteMaxPrice={absoluteMaxPrice}
+					maxPrice={maxPrice ?? absoluteMaxPrice}
+					setMaxPrice={(val: number) => {
+						setMaxPrice(val);
+						setPage(1);
+					}}
 				/>
 
 				<section className="flex-1">
@@ -73,13 +126,18 @@ export const CellPhonesPage = () => {
 						<div className="flex w-full items-center gap-4 sm:w-auto">
 							<div className="relative flex-1 sm:flex-initial">
 								<select
+									value={sortBy}
+									onChange={(e) => {
+										setSortBy(e.target.value);
+										setPage(1);
+									}}
 									className="w-full appearance-none rounded-xl border-none bg-white py-2 pl-4 pr-10 text-sm font-medium shadow-sm focus:ring-2 focus:ring-primary sm:w-auto"
 									aria-label="Ordenar por"
 								>
-									<option>Más populares</option>
-									<option>Precio: menor a mayor</option>
-									<option>Precio: mayor a menor</option>
-									<option>Novedades</option>
+									<option value="Más populares">Más populares</option>
+									<option value="Precio: menor a mayor">Precio: menor a mayor</option>
+									<option value="Precio: mayor a menor">Precio: mayor a menor</option>
+									<option value="Novedades">Novedades</option>
 								</select>
 								<span className="material-icons-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
 									expand_more

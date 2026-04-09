@@ -7,12 +7,12 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ItemsCheckout } from './ItemsCheckout';
 import { useUser } from '../../hooks/auth/useUser';
-import { MercadoPagoCheckout } from './MercadoPagoCheckout';
-import { StripeCheckout } from './StripeCheckout';
-import { PaymentMethodSelector } from './PaymentMethodSelector';
+import { PaymentMethodSelector, PaymentMethod } from './PaymentMethodSelector';
 import { useState } from 'react';
-
-type PaymentMethod = 'stripe' | 'checkout_pro';
+import { useProcessPayment } from '../../hooks/payments/useProcessPayment';
+import { useCartStore } from '../../store/cart.store';
+import { useNavigate } from 'react-router-dom';
+import { ImSpinner2 } from 'react-icons/im';
 
 export const FormCheckout = () => {
 	const {
@@ -24,8 +24,15 @@ export const FormCheckout = () => {
 	});
 
 	const [addressData, setAddressData] = useState<AddressFormValues | null>(null);
-	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('stripe');
+	const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('webpay');
 	const { session } = useUser();
+	const navigate = useNavigate();
+
+	const cartItems = useCartStore(state => state.items);
+	const totalAmount = useCartStore(state => state.totalAmount);
+	const cleanCart = useCartStore(state => state.cleanCart);
+
+	const { mutate: processPayment, isPending: isProcessingPayment } = useProcessPayment();
 
 	const onSubmit = handleSubmit(data => {
 		setAddressData(data);
@@ -45,6 +52,54 @@ export const FormCheckout = () => {
 			},
 		}
 		: null;
+
+	const handlePayment = () => {
+		if (!session?.user) {
+			navigate('/login');
+			return;
+		}
+
+		if (!buyerData) return;
+
+		const items = cartItems.map(item => ({
+			variantId: item.variantId,
+			quantity: item.quantity,
+			price: item.price,
+			name: item.name,
+			image: item.image,
+		}));
+
+		processPayment(
+			{ items, totalAmount, buyerData, paymentMethod },
+			{
+				onSuccess: data => {
+					cleanCart();
+					if (paymentMethod === 'webpay') {
+						if (!data.webpayUrl || !data.webpayToken) return;
+						// Crear un formulario invisible y enviarlo vía POST a la URL de Transbank
+						const form = document.createElement('form');
+						form.method = 'POST';
+						form.action = data.webpayUrl;
+						
+						const tokenInput = document.createElement('input');
+						tokenInput.type = 'hidden';
+						tokenInput.name = 'token_ws';
+						tokenInput.value = data.webpayToken;
+						
+						form.appendChild(tokenInput);
+						document.body.appendChild(form);
+						form.submit();
+					} else {
+						// MercadoPago redirige directo al initPoint vía GET
+						if (data.initPoint) window.location.href = data.initPoint;
+					}
+				},
+				onError: error => {
+					console.error('Error procesando pago:', error);
+				},
+			}
+		);
+	};
 
 	return (
 		<div className='glass-card p-6 md:p-8'>
@@ -144,12 +199,29 @@ export const FormCheckout = () => {
 							onMethodChange={setPaymentMethod}
 						/>
 
-						{paymentMethod === 'stripe' && (
-							<StripeCheckout buyerData={buyerData} />
+						{isProcessingPayment ? (
+							<div className='flex flex-col items-center justify-center gap-3 py-6'>
+								<ImSpinner2 className='h-8 w-8 animate-spin text-[#424874]' />
+								<p className='text-sm font-medium text-[#64748b]'>
+									Procesando tu pago...
+								</p>
+							</div>
+						) : (
+							<button
+								type='button'
+								onClick={handlePayment}
+								className='btn-primary mt-4 w-full justify-center text-center'
+							>
+								{paymentMethod === 'webpay' ? 'Pagar con Webpay' : 'Pagar con MercadoPago'}
+							</button>
 						)}
 
 						{paymentMethod === 'checkout_pro' && (
-							<MercadoPagoCheckout buyerData={buyerData} />
+							<div className='rounded-lg bg-blue-50 border border-blue-200 p-4 mt-2'>
+								<p className='text-xs text-blue-800'>
+									<strong>Nota:</strong> Serás redirigido a Mercado Pago donde podrás pagar con tarjeta, efectivo o dinero en cuenta.
+								</p>
+							</div>
 						)}
 					</div>
 				)}

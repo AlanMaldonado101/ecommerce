@@ -1,32 +1,71 @@
 import { Link } from 'react-router-dom';
-import { useCategories } from '../../hooks';
+import { useAttributes, useCategories } from '../../hooks';
+import { formatPrice } from '../../helpers';
 
-const colorOptions = [
-	{ name: 'Rosa', class: 'bg-pink-200' },
-	{ name: 'Azul', class: 'bg-blue-200' },
-	{ name: 'Lavanda', class: 'bg-purple-200' },
-	{ name: 'Crema', class: 'bg-yellow-100' },
-	{ name: 'Menta', class: 'bg-green-200' },
+const colorSwatches = [
+	{ code: '#EF4444', name: 'Rojo' },
+	{ code: '#F97316', name: 'Naranja' },
+	{ code: '#EAB308', name: 'Amarillo' },
+	{ code: '#22C55E', name: 'Verde' },
+	{ code: '#3B82F6', name: 'Azul' },
+	{ code: '#8B5CF6', name: 'Violeta' },
+	{ code: '#EC4899', name: 'Rosa' },
+	{ code: '#FFFFFF', name: 'Blanco', border: true },
+	{ code: '#111827', name: 'Negro' },
+	{ code: '#F9A8D4', name: 'Rosa Pastel' },
+	{ code: '#93C5FD', name: 'Azul Pastel' },
+	{ code: '#6EE7B7', name: 'Verde Pastel' },
 ];
-
-const occasions = ['Cumpleaños', 'Boda', 'Baby Shower'];
 
 interface Props {
 	selectedCategories: string[];
 	setSelectedCategories: (categories: string[]) => void;
+	selectedColors: string[];
+	setSelectedColors: (colors: string[]) => void;
+	selectedOccasions: string[];
+	setSelectedOccasions: (occasions: string[]) => void;
+	absoluteMinPrice?: number;
+	absoluteMaxPrice?: number;
+	maxPrice: number;
+	setMaxPrice: (price: number) => void;
 }
 
 export const ContainerFilter = ({
 	selectedCategories,
 	setSelectedCategories,
+	selectedColors,
+	setSelectedColors,
+	selectedOccasions,
+	setSelectedOccasions,
+	absoluteMinPrice = 0,
+	absoluteMaxPrice = 10000,
+	maxPrice,
+	setMaxPrice,
 }: Props) => {
 	const { categories: productCategories } = useCategories();
+	const { occasions } = useAttributes();
 
 	const handleCategoryChange = (slug: string) => {
 		if (selectedCategories.includes(slug)) {
 			setSelectedCategories(selectedCategories.filter(c => c !== slug));
 		} else {
 			setSelectedCategories([...selectedCategories, slug]);
+		}
+	};
+
+	const handleColorChange = (colorCode: string) => {
+		if (selectedColors.includes(colorCode)) {
+			setSelectedColors(selectedColors.filter(c => c !== colorCode));
+		} else {
+			setSelectedColors([...selectedColors, colorCode]);
+		}
+	};
+
+	const handleOccasionChange = (occasionId: string) => {
+		if (selectedOccasions.includes(occasionId)) {
+			setSelectedOccasions(selectedOccasions.filter(o => o !== occasionId));
+		} else {
+			setSelectedOccasions([...selectedOccasions, occasionId]);
 		}
 	};
 
@@ -42,7 +81,12 @@ export const ContainerFilter = ({
 					</h3>
 					<button
 						type="button"
-						onClick={() => setSelectedCategories([])}
+						onClick={() => {
+							setSelectedCategories([]);
+							setSelectedColors([]);
+							setSelectedOccasions([]);
+							setMaxPrice(absoluteMaxPrice);
+						}}
 						className="text-xs font-medium text-slate-500 hover:text-primary hover:underline"
 					>
 						Limpiar
@@ -81,11 +125,16 @@ export const ContainerFilter = ({
 					</h4>
 					<input
 						type="range"
+						min={absoluteMinPrice}
+						max={absoluteMaxPrice}
+						step={100}
+						value={maxPrice}
+						onChange={(e) => setMaxPrice(Number(e.target.value))}
 						className="accent-primary h-2 w-full cursor-pointer appearance-none rounded-lg bg-primary/20"
 					/>
 					<div className="flex justify-between text-xs font-medium text-slate-500">
-						<span>$0</span>
-						<span>$100+</span>
+						<span>{formatPrice(absoluteMinPrice)}</span>
+						<span>{maxPrice >= absoluteMaxPrice ? `${formatPrice(absoluteMaxPrice)}+` : formatPrice(maxPrice)}</span>
 					</div>
 				</div>
 
@@ -95,13 +144,23 @@ export const ContainerFilter = ({
 						Colores
 					</h4>
 					<div className="flex flex-wrap gap-2">
-						{colorOptions.map(c => (
+						{colorSwatches.map(c => (
 							<button
 								key={c.name}
 								type="button"
 								title={c.name}
-								className={`h-8 w-8 rounded-full border-2 border-transparent shadow-sm transition-all hover:border-primary ${c.class}`}
-							/>
+								onClick={() => handleColorChange(c.code)}
+								style={{ backgroundColor: c.code }}
+								className={`h-8 w-8 rounded-full border-2 ${
+									c.border ? 'border-slate-300' : 'border-transparent'
+								} shadow-sm transition-all hover:border-primary/50 relative flex items-center justify-center ${
+									selectedColors.includes(c.code) ? 'ring-2 ring-primary ring-offset-1' : ''
+								}`}
+							>
+								{selectedColors.includes(c.code) && (
+									<span className={`text-[10px] font-bold ${c.code === '#FFFFFF' ? 'text-black' : 'text-white'}`}>✓</span>
+								)}
+							</button>
 						))}
 					</div>
 				</div>
@@ -114,11 +173,16 @@ export const ContainerFilter = ({
 					<div className="flex flex-wrap gap-2">
 						{occasions.map(occ => (
 							<button
-								key={occ}
+								key={occ.id}
 								type="button"
-								className="rounded-full bg-accent-blue/30 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-primary/30"
+								onClick={() => handleOccasionChange(occ.id)}
+								className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
+									selectedOccasions.includes(occ.id)
+										? 'bg-primary text-white shadow-md'
+										: 'bg-accent-blue/30 text-slate-700 hover:bg-primary/30'
+								}`}
 							>
-								{occ}
+								{occ.name}
 							</button>
 						))}
 					</div>

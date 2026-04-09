@@ -15,6 +15,14 @@ export * from './OrderDetailPage';
 export * from './OrdersListPage';
 
 /* ********************************** */
+/*           HELP PAGES                */
+/* ********************************** */
+export * from './help/SeguimientoPedido';
+export * from './help/Envios';
+export * from './help/Devoluciones';
+export * from './help/Contacto';
+
+/* ********************************** */
 /*           ACCOUNT PAGES             */
 /* ********************************** */
 export * from './account';
@@ -25,5 +33,7 @@ export * from './account';
 export * from './dashboard/DashboardProductsPage';
 export * from './dashboard/DashboardNewProductPage';
 export * from './dashboard/DashboardProductSlugPage';
+export * from './dashboard/DashboardOccasionsPage';
+export * from './dashboard/DashboardNewOccasionPage';
 export * from "./dashboard/DashboardOrdersPage"
 export * from "./dashboard/DashboardOrderPage"
