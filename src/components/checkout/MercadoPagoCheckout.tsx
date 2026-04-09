@@ -1,4 +1,4 @@
-import { useCreatePreference } from '../../hooks/payments/useCreatePreference';
+import { useProcessPayment } from '../../hooks/payments/useProcessPayment';
 import { useCartStore } from '../../store/cart.store';
 import { useUser } from '../../hooks/auth/useUser';
 import { useNavigate } from 'react-router-dom';
@@ -26,7 +26,7 @@ export const MercadoPagoCheckout = ({ buyerData }: MercadoPagoCheckoutProps) => 
   const { session } = useUser();
   const navigate = useNavigate();
 
-  const { mutate: createPreference, isPending: isCreatingPreference } = useCreatePreference();
+  const { mutate: processPayment, isPending: isProcessingPayment } = useProcessPayment();
 
   const handleCheckoutPro = () => {
     if (!session?.user) {
@@ -42,22 +42,25 @@ export const MercadoPagoCheckout = ({ buyerData }: MercadoPagoCheckoutProps) => 
       image: item.image,
     }));
 
-    createPreference(
+    processPayment(
       {
         items,
         totalAmount,
         buyerData,
+        paymentMethod: 'checkout_pro',
       },
       {
         onSuccess: (data) => {
           cleanCart();
-          window.location.href = data.initPoint;
+          if (data.initPoint) {
+            window.location.href = data.initPoint;
+          }
         },
       }
     );
   };
 
-  if (isCreatingPreference) {
+  if (isProcessingPayment) {
     return (
       <div className='flex flex-col items-center justify-center gap-3 py-8'>
         <ImSpinner2 className='h-10 w-10 animate-spin text-[#424874]' />
